@@ -169,7 +169,6 @@ Optional: Google Gemini API → LLM summaries
 6. **Stress:** Linear regression applies interest-rate scenario
 7. **Display:** Charts, tables, and summaries rendered
 
-<<<<<<< HEAD
 ## 7 Sample Outputs & Screenshots
 
 ### Dashboard Screenshots
@@ -241,58 +240,3 @@ For questions or issues:
 ---
 
 
-=======
-## 7. Limitations
-
-### Current Limitations
-- **Forecast horizon:** Fixed to 4-8 weeks (4-6 weeks = 1 month, 7+ weeks = 2 months) due to weekly-to-monthly mapping
-- **Segment granularity:** Monthly data only; sub-monthly (weekly) data not supported
-- **Model complexity:** SARIMAX(1,0,0) is simple; seasonal patterns not captured
-- **Data requirements:** Minimum 12 observations per segment; sparse segments excluded
-- **Exogenous variables:** Limited to income, interest rate, unemployment, GDP growth; custom features not yet supported
-- **Scalability:** Single-threaded; large datasets (100k+ rows) may be slow
-- **Deployment:** Vercel version has 100-second timeout limit; long forecasts may fail
-- **No real-time updates:** Static CSV inputs only; live data feeds not integrated
-- **AI summaries:** Optional only; requires Gemini API key; not all users have access
-
-## 8. Future Improvements
-
-### Short-term (Next Sprint)
-- [ ] Multi-step forecasting with auto-ARIMA for model selection
-- [ ] Custom exogenous variable support for user-provided features
-- [ ] Export functionality (PDF reports, CSV downloads)
-- [ ] Dark/light theme toggle
-- [ ] Performance optimization for 100k+ row datasets
-
-### Medium-term (Q2 2026)
-- [ ] Real-time data integration (SQL database, cloud data warehouse)
-- [ ] Ensemble forecasting (combine SARIMAX + Prophet + LSTM)
-- [ ] Causal inference for driver attribution (DoWhy library)
-- [ ] Multi-segment portfolio risk aggregation
-- [ ] Historical scenario backtesting (past rate shocks)
-
-### Long-term (Q3-Q4 2026)
-- [ ] Deep learning models (LSTM, Transformer) for longer-horizon forecasts
-- [ ] Hierarchical forecasting (portfolio → segment → product)
-- [ ] Automatic model retraining pipeline
-- [ ] Mobile app (React Native)
-- [ ] REST API with authentication for enterprise integration
-- [ ] Real-time alerting system (Slack/Email integration)
-
-### Quality & DevOps
-- [ ] Increase test coverage (currently ~70%)
-- [ ] CI/CD pipeline with GitHub Actions
-- [ ] Docker containerization for consistent deployment
-- [ ] Monitoring & logging (DataDog, Sentry)
-- [ ] Documentation improvements (API docs, architecture diagrams)
-
-## Contact & Support
-
-For questions or issues:
-- **GitHub Issues:** [Project Issues](https://github.com/shubhtiwari65/Credit-Default-Risk-Forecasting/issues)
-- **Email:** shubhtiwari65@example.com
-
----
-
-**Last Updated:** April 12, 2026
->>>>>>> 8cf147f (Updated project files)
