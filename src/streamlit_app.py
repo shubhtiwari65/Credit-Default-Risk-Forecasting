@@ -822,7 +822,7 @@ def _maybe_generate_llm_summary(fallback_summary: str, context_payload: dict) ->
 # ─────────────────────────────────────────────
 def main() -> None:
     st.set_page_config(
-        page_title="Delinquency Intelligence",
+        page_title="Credit-Default-Risk-Forecasting",
         page_icon="📊",
         layout="wide",
     )
@@ -833,7 +833,7 @@ def main() -> None:
         st.markdown(
             """
             <div class="sidebar-logo">
-                <div class="logo-title">📊 Delinquency Intelligence</div>
+                <div class="logo-title">📊 Credit-Default-Risk-Forecasting</div>
                 <div class="logo-sub">Risk Forecasting Platform</div>
             </div>
             """,
@@ -966,7 +966,7 @@ def main() -> None:
     st.markdown(
         f"""
         <div class="top-bar">
-            <div class="app-title">Segment <span>Delinquency Intelligence</span></div>
+            <div class="app-title">Credit-Default-Risk-<span>Forecasting</span></div>
             <div class="segment-badge">📍 {selected_segment}</div>
         </div>
         """,
