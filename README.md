@@ -1,8 +1,8 @@
-# Segment Delinquency Forecasting Dashboard
+# Credit-Default-Risk-Forecasting
 
 ## 1. Overview
 
-This project is a **credit-risk analytics application** designed for segment-level delinquency monitoring in banking and lending contexts. It forecasts short-horizon delinquency rates using SARIMAX models, detects anomalous repayment stress patterns, and simulates how default risk changes under interest-rate shocks. The dashboard provides explainable, actionable insights for portfolio managers and risk committees, enabling data-driven decision-making on credit exposure and risk mitigation strategies.
+This project is a **Credit-Default-Risk-Forecasting application** designed for segment-level delinquency monitoring in banking and lending contexts. It forecasts short-horizon delinquency rates using SARIMAX models, detects anomalous repayment stress patterns, and simulates how default risk changes under interest-rate shocks. The dashboard provides explainable, actionable insights for portfolio managers and risk committees, enabling data-driven decision-making on credit exposure and risk mitigation strategies.
 
 **Problem Solved:** Banks need early warning signals for deteriorating credit quality at the segment level. This tool provides interpretable forecasts with uncertainty bands and anomaly detection to catch emerging risks before they escalate.
 
