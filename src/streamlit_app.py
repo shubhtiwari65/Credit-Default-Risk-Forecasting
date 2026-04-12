@@ -145,61 +145,32 @@ def _apply_custom_style() -> None:
             letter-spacing: 0.06em;
         }
 
-        /* ── File uploader: nuke default button, rebuild cleanly ── */
+        /* -- File uploader standard overrides -- */
         [data-testid="stFileUploader"] section {
-            background: var(--bg-card) !important;
-            border: 1px dashed rgba(0,212,180,0.35) !important;
-            border-radius: 10px !important;
-            padding: 14px 12px 10px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 6px !important;
+            background-color: var(--bg-card);
+            border: 1px dashed rgba(0, 212, 180, 0.4);
+            border-radius: 8px;
+            padding: 16px;
         }
-        /* Completely hide the broken default button */
-        [data-testid="stFileUploader"] section > button {
-            all: unset !important;
-            display: block !important;
-            width: 100% !important;
-            text-align: center !important;
-            background: rgba(0,212,180,0.12) !important;
-            border: 1px solid rgba(0,212,180,0.4) !important;
-            border-radius: 8px !important;
-            color: #00D4B4 !important;
-            font-family: 'DM Sans', sans-serif !important;
-            font-size: 13px !important;
-            font-weight: 600 !important;
-            padding: 9px 0 !important;
-            cursor: pointer !important;
-            letter-spacing: 0.01em !important;
-            box-sizing: border-box !important;
-            transition: background 0.2s !important;
-        }
-        [data-testid="stFileUploader"] section > button:hover {
-            background: rgba(0,212,180,0.22) !important;
-        }
-        /* Hide ALL spans inside the button — they produce the doubled text */
-        [data-testid="stFileUploader"] section > button span {
-            display: none !important;
-        }
-        /* Re-show the button text using ::before pseudo-element instead */
-        [data-testid="stFileUploader"] section > button::before {
-            content: "📂  Browse CSV file" !important;
-            display: block !important;
-            color: #00D4B4 !important;
-            font-family: 'DM Sans', sans-serif !important;
-            font-size: 13px !important;
-            font-weight: 600 !important;
+        [data-testid="stFileUploader"] section div {
+            color: var(--text-secondary);
         }
         [data-testid="stFileUploader"] section small {
-            color: var(--text-muted) !important;
-            font-size: 11px !important;
+            font-size: 12px;
+            color: var(--text-muted);
         }
-        /* Drag-and-drop instruction text */
-        [data-testid="stFileUploader"] section > div {
-            color: var(--text-muted) !important;
-            font-size: 11px !important;
+        [data-testid="stFileUploader"] section button {
+            background-color: rgba(0, 212, 180, 0.1) !important;
+            border: 1px solid rgba(0, 212, 180, 0.3) !important;
+            border-radius: 6px !important;
+            color: #00D4B4 !important;
+            padding: 4px 12px !important;
+            font-weight: 600 !important;
         }
+        [data-testid="stFileUploader"] section button:hover {
+            background-color: rgba(0, 212, 180, 0.2) !important;
+        }
+        
         [data-testid="stSidebar"] .stSlider [data-testid="stTickBarMin"],
         [data-testid="stSidebar"] .stSlider [data-testid="stTickBarMax"] {
             color: var(--text-muted) !important;
