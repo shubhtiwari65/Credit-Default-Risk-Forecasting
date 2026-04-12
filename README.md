@@ -169,7 +169,26 @@ Optional: Google Gemini API → LLM summaries
 6. **Stress:** Linear regression applies interest-rate scenario
 7. **Display:** Charts, tables, and summaries rendered
 
-## 7. Limitations
+
+## 7 Sample Outputs & Screenshots
+
+### Dashboard Screenshots
+- **Forecast Panel** - Historical + predicted delinquency with 80% confidence bands
+  <img width="941" height="439" alt="output_Forecast" src="https://github.com/user-attachments/assets/300eda1f-0518-478a-bbdf-51e78daf7593" />
+
+- **Anomaly Monitor** - Detected outliers with driver explanations
+- <img width="948" height="438" alt="anomaly" src="https://github.com/user-attachments/assets/c42b9702-7934-48ea-9e74-3aee4585e2d2" />
+
+- **Scenario Lab** - Interest rate shock simulations
+- <img width="952" height="440" alt="output_scenario" src="https://github.com/user-attachments/assets/c1b39b02-5df7-4122-b460-20582b06dbc3" />
+
+- **Summary Tab** - Backtesting metrics (MAE, RMSE, ROC-AUC)
+- <img width="950" height="442" alt="output_Executive_summary" src="https://github.com/user-attachments/assets/584dfcc3-813a-4054-924d-1509fc7b0d5b" />
+
+
+### Data Tables
+
+## 8. Limitations
 
 ### Current Limitations
 - **Forecast horizon:** Fixed to 4-8 weeks (4-6 weeks = 1 month, 7+ weeks = 2 months) due to weekly-to-monthly mapping
@@ -182,7 +201,7 @@ Optional: Google Gemini API → LLM summaries
 - **No real-time updates:** Static CSV inputs only; live data feeds not integrated
 - **AI summaries:** Optional only; requires Gemini API key; not all users have access
 
-## 8. Future Improvements
+## 9. Future Improvements
 
 ### Short-term (Next Sprint)
 - [ ] Multi-step forecasting with auto-ARIMA for model selection
@@ -217,8 +236,9 @@ Optional: Google Gemini API → LLM summaries
 
 For questions or issues:
 - **GitHub Issues:** [Project Issues](https://github.com/shubhtiwari65/Credit-Default-Risk-Forecasting/issues)
-- **Email:** shubhtiwari65@example.com
+- **Email:** shubhtiwari651@gmail.com
 
 ---
 
-**Last Updated:** April 12, 2026
+
+
