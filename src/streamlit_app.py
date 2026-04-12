@@ -29,327 +29,609 @@ DATA_SOURCE_EXTENDED = "Extended sample dataset"
 DATA_SOURCE_UPLOAD = "Upload your own CSV"
 
 
+# ─────────────────────────────────────────────
+#  STYLES
+# ─────────────────────────────────────────────
 def _apply_custom_style() -> None:
     st.markdown(
         """
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
         :root {
-            --bg-main: #0B1120;
-            --bg-sidebar: #111827;
-            --text-heading: #F8FAFC;
-            --text-body: #CBD5E1;
-            --accent-primary: #14B8A6; /* Teal accent */
-            --accent-secondary: #0D9488;
-            --card-bg: #1E293B;
-            --card-border: #334155;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --chart-bg: #1E293B;
+            --bg-main: #080E1A;
+            --bg-panel: #0D1526;
+            --bg-card: #111D33;
+            --bg-card-hover: #162240;
+            --border: rgba(255,255,255,0.07);
+            --border-accent: rgba(0,212,180,0.35);
+            --teal: #00D4B4;
+            --teal-dim: rgba(0,212,180,0.12);
+            --teal-glow: rgba(0,212,180,0.25);
+            --red: #FF4D6A;
+            --red-dim: rgba(255,77,106,0.12);
+            --green: #00C48C;
+            --green-dim: rgba(0,196,140,0.12);
+            --amber: #FFB547;
+            --amber-dim: rgba(255,181,71,0.12);
+            --text-primary: #EEF2FF;
+            --text-secondary: #7A8BAE;
+            --text-muted: #4A5A78;
+            --font: 'DM Sans', sans-serif;
+            --mono: 'DM Mono', monospace;
         }
 
-        /* Streamlit global resets */
-        .stApp {
+        /* ── Global resets ── */
+        html, body, .stApp {
             background-color: var(--bg-main) !important;
+            font-family: var(--font) !important;
         }
 
+        /* Remove Streamlit chrome */
+        header[data-testid="stHeader"] { display: none !important; }
+        [data-testid="stToolbar"] { display: none !important; }
+        [data-testid="stDecoration"] { display: none !important; }
+        [data-testid="stStatusWidget"] { display: none !important; }
+        #MainMenu { display: none !important; }
+        .stDeployButton { display: none !important; }
+        footer { display: none !important; }
+        .block-container { padding: 0 2rem 3rem 2rem !important; max-width: 1400px !important; }
+        /* Hide keyboard shortcut helper that appears top-right of sidebar */
+        [data-testid="stSidebarNav"] { display: none !important; }
+        [class*="keyboard"] { display: none !important; }
+        button[aria-label="keyboard shortcuts"] { display: none !important; }
+        [data-testid="stSidebar"] [data-testid="stSidebarHeader"] { display: none !important; }
+
+        /* ── Typography ── */
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Inter', sans-serif !important;
-            color: var(--text-heading) !important;
-            font-weight: 700 !important;
-            letter-spacing: -0.02em;
+            font-family: var(--font) !important;
+            color: var(--text-primary) !important;
+            letter-spacing: -0.025em;
         }
-        
-        .sidebar-caption {
-            font-family: 'Inter', sans-serif !important;
-            font-size: 14px;
-            color: var(--text-body);
-            margin-top: -12px;
-            margin-bottom: 24px;
-            font-weight: 500;
+        p, div, label, span, li, button, input, select, textarea {
+            font-family: var(--font) !important;
         }
 
-        p, div, label, span, li, button {
-            font-family: 'Inter', sans-serif !important;
-            color: var(--text-body);
-            font-weight: 500;
-        }
-
-        /* Override slider and radio label colors explicitly */
-        .stSlider label, .stRadio label, .stFileUploader label, .stSelectbox label {
-            color: var(--text-heading) !important;
-            font-weight: 600 !important;
-        }
-        
-        /* Subheaders inside sidebar */
-        [data-testid="stSidebar"] h3 {
-            color: var(--text-heading) !important;
-            font-size: 16px !important;
-            font-weight: 700 !important;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 16px;
-        }
-
+        /* ── Sidebar ── */
         [data-testid="stSidebar"] {
-            background-color: var(--bg-sidebar) !important;
-            border-right: 1px solid var(--card-border);
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
-            width: 320px !important;
+            background: var(--bg-panel) !important;
+            border-right: 1px solid var(--border) !important;
+            padding-top: 0 !important;
         }
+        [data-testid="stSidebar"] > div:first-child { padding-top: 0 !important; }
+        [data-testid="stSidebar"] section[data-testid="stSidebar"] > div { padding-top: 0 !important; }
+        /* Extra kill-switch for the keyboard shortcut overlay text */
+        [data-testid="stSidebar"] [data-testid="stSidebarNavItems"] { display: none !important; }
+        .st-emotion-cache-1cypcdb, .st-emotion-cache-uf99v8 { display: none !important; }
 
-        div[data-testid="metric-container"] {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 16px 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-            overflow: hidden;
+        .sidebar-logo {
+            background: linear-gradient(135deg, var(--teal) 0%, #0099DD 100%);
+            padding: 20px 20px 16px;
+            margin: -1rem -1rem 4px -1rem;
         }
-        
-        div[data-testid="metric-container"]::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background-color: var(--accent-primary);
-            opacity: 0.8;
-        }
-        
-        div[data-testid="metric-container"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-        }
-
-        div[data-testid="stMetricValue"] {
-            color: var(--text-heading) !important;
-            font-weight: 800;
-            font-size: 2.2rem !important;
-            letter-spacing: -0.03em;
-        }
-        
-        div[data-testid="stMetricLabel"] {
-            color: var(--text-body) !important;
-            font-weight: 600;
-        }
-
-        div[data-testid="stMetricDelta"] svg {
-            color: var(--accent-primary) !important;
-        }
-        
-        div[data-testid="stMetricDelta"] {
-            color: var(--accent-primary) !important;
-        }
-
-        .hero-card {
-            background: linear-gradient(135deg, #1E293B, #111827);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 32px;
-            margin: 0px 0 24px 0;
-            color: #FFFFFF;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            animation: riseIn 600ms ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-card::after {
-            content: '';
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            width: 40%;
-            height: 100%;
-            background: radial-gradient(circle at 80% 20%, rgba(20, 184, 166, 0.15) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        .hero-title {
-            font-family: 'Inter', sans-serif !important;
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: var(--text-heading);
-            letter-spacing: -0.03em;
-        }
-
-        .hero-sub {
-            font-size: 16px;
-            font-weight: 400;
-            opacity: 0.85;
-            margin-bottom: 24px;
-            color: var(--text-body);
-            max-width: 650px;
-            line-height: 1.5;
-        }
-
-        .hero-tags {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .hero-tag {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 999px; /* Pill shape */
-            padding: 6px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-heading);
-            backdrop-filter: blur(4px);
-            transition: background 0.2s;
-        }
-        
-        .hero-tag:hover {
-            background: rgba(20, 184, 166, 0.15);
-            border: 1px solid rgba(20, 184, 166, 0.3);
-        }
-
-        .note-card {
-            background-color: var(--card-bg);
-            border-left: 4px solid var(--accent-primary);
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-top: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            font-size: 14px;
-            color: var(--text-body);
-            border-right: 1px solid var(--card-border);
-            border-top: 1px solid var(--card-border);
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .summary-card {
-            background-color: var(--card-bg);
-            border-top: 4px solid var(--accent-primary);
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-            border-left: 1px solid var(--card-border);
-            border-right: 1px solid var(--card-border);
-            border-bottom: 1px solid var(--card-border);
-            animation: riseIn 600ms ease-out;
+        .sidebar-logo .logo-title {
             font-size: 15px;
-            line-height: 1.6;
-            color: var(--text-heading);
+            font-weight: 700;
+            color: #080E1A;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+        .sidebar-logo .logo-sub {
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(8,14,26,0.65);
+            margin-top: 3px;
         }
 
-        .side-tip {
-            background-color: rgba(255, 255, 255, 0.03);
-            border: 1px dashed var(--card-border);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 24px;
-            font-size: 13px;
-            color: var(--text-body);
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 20px 0 10px;
+            padding: 0 4px;
         }
 
-        /* Tabs styling */
-        div[data-baseweb="tab-list"] {
-            gap: 8px;
-            padding-bottom: 16px;
-            margin-top: 16px;
-        }
-
-        button[role="tab"] {
-            border-radius: 8px !important;
-            border: 1px solid var(--card-border) !important;
-            background: var(--card-bg) !important;
-            padding: 10px 20px !important;
+        /* Sidebar inputs */
+        [data-testid="stSidebar"] .stRadio label,
+        [data-testid="stSidebar"] .stSlider label,
+        [data-testid="stSidebar"] .stSelectbox label,
+        [data-testid="stSidebar"] .stFileUploader label {
+            font-size: 12px !important;
             font-weight: 600 !important;
-            color: var(--text-body) !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        button[role="tab"]:hover {
-            border-color: var(--accent-primary) !important;
-            color: var(--text-heading) !important;
+            color: var(--text-secondary) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
         }
 
-        button[role="tab"][aria-selected="true"] {
-            color: #FFFFFF !important;
-            background: var(--accent-primary) !important;
-            border-color: var(--accent-primary) !important;
-            box-shadow: 0 4px 6px -1px rgba(20, 184, 166, 0.3) !important;
+        /* ── File uploader: nuke default button, rebuild cleanly ── */
+        [data-testid="stFileUploader"] section {
+            background: var(--bg-card) !important;
+            border: 1px dashed rgba(0,212,180,0.35) !important;
+            border-radius: 10px !important;
+            padding: 14px 12px 10px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 6px !important;
         }
-
-        /* Plotly background override */
-        .js-plotly-plot .plotly .bg {
-            fill: var(--card-bg) !important;
+        /* Completely hide the broken default button */
+        [data-testid="stFileUploader"] section > button {
+            all: unset !important;
+            display: block !important;
+            width: 100% !important;
+            text-align: center !important;
+            background: rgba(0,212,180,0.12) !important;
+            border: 1px solid rgba(0,212,180,0.4) !important;
+            border-radius: 8px !important;
+            color: #00D4B4 !important;
+            font-family: 'DM Sans', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            padding: 9px 0 !important;
+            cursor: pointer !important;
+            letter-spacing: 0.01em !important;
+            box-sizing: border-box !important;
+            transition: background 0.2s !important;
         }
-        .js-plotly-plot .plotly .scrollbar {
+        [data-testid="stFileUploader"] section > button:hover {
+            background: rgba(0,212,180,0.22) !important;
+        }
+        /* Hide ALL spans inside the button — they produce the doubled text */
+        [data-testid="stFileUploader"] section > button span {
             display: none !important;
         }
-
-        @keyframes riseIn {
-            from {opacity: 0; transform: translateY(10px);}
-            to {opacity: 1; transform: translateY(0);}
+        /* Re-show the button text using ::before pseudo-element instead */
+        [data-testid="stFileUploader"] section > button::before {
+            content: "📂  Browse CSV file" !important;
+            display: block !important;
+            color: #00D4B4 !important;
+            font-family: 'DM Sans', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
         }
+        [data-testid="stFileUploader"] section small {
+            color: var(--text-muted) !important;
+            font-size: 11px !important;
+        }
+        /* Drag-and-drop instruction text */
+        [data-testid="stFileUploader"] section > div {
+            color: var(--text-muted) !important;
+            font-size: 11px !important;
+        }
+        [data-testid="stSidebar"] .stSlider [data-testid="stTickBarMin"],
+        [data-testid="stSidebar"] .stSlider [data-testid="stTickBarMax"] {
+            color: var(--text-muted) !important;
+            font-size: 11px !important;
+        }
+        [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label span {
+            font-size: 13px !important;
+            color: var(--text-primary) !important;
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stSelectbox"] div[data-baseweb="select"] {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+        }
+
+        /* Slider thumb accent */
+        [data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [data-testid="stThumbValue"] {
+            background: var(--teal) !important;
+            color: #080E1A !important;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        [data-testid="stSidebar"] .stSlider [data-baseweb="slider"] > div > div:nth-child(3) {
+            background: var(--teal) !important;
+        }
+
+        .sidebar-tip {
+            background: var(--teal-dim);
+            border: 1px solid var(--border-accent);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--teal);
+            line-height: 1.5;
+            margin-top: 16px;
+        }
+        .sidebar-tip b { color: var(--teal); }
+
+        /* ── Top bar / hero ── */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0 8px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        .top-bar .app-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+        .top-bar .app-title span { color: var(--teal); }
+        .top-bar .segment-badge {
+            background: var(--teal-dim);
+            border: 1px solid var(--border-accent);
+            color: var(--teal);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 999px;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── Insight Strip ── */
+        .insight-strip {
+            background: linear-gradient(120deg, #0D2040 0%, #0D1A36 40%, #0D2030 100%);
+            border: 1px solid var(--border-accent);
+            border-radius: 14px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .insight-strip::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 3px; height: 100%;
+            background: linear-gradient(180deg, var(--teal) 0%, #0099DD 100%);
+        }
+        .insight-strip::after {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(0,212,180,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .insight-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 8px rgba(0,212,180,0.4));
+        }
+        .insight-text .insight-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 4px;
+        }
+        .insight-text .insight-main {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        .insight-text .insight-main b { color: var(--text-primary); font-weight: 700; }
+
+        /* ── KPI Cards ── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 16px 16px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            cursor: default;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .kpi-card .kpi-icon {
+            font-size: 20px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .kpi-card .kpi-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .kpi-card .kpi-value {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .kpi-card .kpi-delta {
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+        .kpi-card .kpi-delta.up { background: var(--red-dim); color: var(--red); }
+        .kpi-card .kpi-delta.down { background: var(--green-dim); color: var(--green); }
+        .kpi-card .kpi-delta.neutral { background: var(--teal-dim); color: var(--teal); }
+        .kpi-card .kpi-bar {
+            position: absolute;
+            bottom: 0; left: 0; height: 3px; width: 100%;
+        }
+        .kpi-card.color-teal .kpi-value { color: var(--teal); }
+        .kpi-card.color-teal .kpi-bar { background: linear-gradient(90deg, var(--teal), transparent); }
+        .kpi-card.color-red .kpi-value { color: var(--red); }
+        .kpi-card.color-red .kpi-bar { background: linear-gradient(90deg, var(--red), transparent); }
+        .kpi-card.color-green .kpi-value { color: var(--green); }
+        .kpi-card.color-green .kpi-bar { background: linear-gradient(90deg, var(--green), transparent); }
+        .kpi-card.color-amber .kpi-value { color: var(--amber); }
+        .kpi-card.color-amber .kpi-bar { background: linear-gradient(90deg, var(--amber), transparent); }
+
+        /* ── Tabs ── */
+        div[data-baseweb="tab-list"] {
+            gap: 6px !important;
+            background: transparent !important;
+            border-bottom: 1px solid var(--border) !important;
+            padding-bottom: 0 !important;
+        }
+        button[role="tab"] {
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            border-bottom: 2px solid transparent !important;
+            color: var(--text-muted) !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            padding: 10px 18px !important;
+            transition: all 0.2s !important;
+            margin-bottom: -1px !important;
+        }
+        button[role="tab"]:hover {
+            color: var(--text-secondary) !important;
+        }
+        button[role="tab"][aria-selected="true"] {
+            color: var(--teal) !important;
+            border-bottom-color: var(--teal) !important;
+            background: transparent !important;
+        }
+        div[data-baseweb="tab-panel"] { padding-top: 24px !important; }
+
+        /* ── Anomaly Table ── */
+        .anomaly-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+        .anomaly-badge.high { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
+        .anomaly-badge.low { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,196,140,0.3); }
+        .anomaly-badge.spike { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(255,181,71,0.3); }
+
+        .anomaly-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 16px;
+        }
+        .anomaly-summary .count-bubble {
+            background: var(--red-dim);
+            border: 1px solid rgba(255,77,106,0.3);
+            color: var(--red);
+            font-size: 22px;
+            font-weight: 700;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .anomaly-summary .count-bubble.zero {
+            background: var(--green-dim);
+            border-color: rgba(0,196,140,0.3);
+            color: var(--green);
+        }
+        .anomaly-summary .count-text .main { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+        .anomaly-summary .count-text .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ── Scenario cards ── */
+        .scenario-compare {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .scenario-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .scenario-card.stressed { border-color: rgba(255,77,106,0.3); }
+        .scenario-card .sc-label {
+            font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
+        }
+        .scenario-card .sc-value {
+            font-size: 30px; font-weight: 700; letter-spacing: -0.04em;
+            margin-bottom: 4px;
+        }
+        .scenario-card.baseline .sc-value { color: var(--teal); }
+        .scenario-card.stressed .sc-value { color: var(--red); }
+        .scenario-card .sc-sub { font-size: 12px; color: var(--text-muted); }
+        .scenario-arrow {
+            font-size: 24px; text-align: center;
+            color: var(--amber);
+            filter: drop-shadow(0 0 6px rgba(255,181,71,0.4));
+        }
+        .scenario-delta-badge {
+            display: inline-block;
+            background: var(--red-dim);
+            border: 1px solid rgba(255,77,106,0.3);
+            color: var(--red);
+            font-size: 14px; font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 999px;
+            margin-top: 8px;
+        }
+
+        /* ── Summary / Executive card ── */
+        .exec-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .exec-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--teal) 0%, #0099DD 50%, var(--teal) 100%);
+        }
+        .exec-card .exec-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 16px;
+        }
+        .exec-card .exec-header .exec-title {
+            font-size: 16px; font-weight: 700; color: var(--text-primary);
+        }
+        .exec-card .exec-header .exec-badge {
+            background: var(--teal-dim); border: 1px solid var(--border-accent);
+            color: var(--teal); font-size: 10px; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 3px 10px; border-radius: 999px;
+        }
+        .exec-body {
+            font-size: 14px; color: var(--text-secondary); line-height: 1.8;
+        }
+
+        .meta-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--bg-main); border: 1px solid var(--border);
+            border-radius: 8px; padding: 6px 12px;
+            font-size: 12px; color: var(--text-secondary);
+            margin-right: 8px; margin-bottom: 8px;
+        }
+        .meta-pill span { color: var(--teal); font-weight: 600; }
+
+        /* ── Chart container ── */
+        .chart-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        /* ── Status indicators ── */
+        .trend-indicator {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 999px;
+            font-size: 12px; font-weight: 700;
+        }
+        .trend-indicator.warning { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(255,181,71,0.3); }
+        .trend-indicator.stable  { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(0,196,140,0.3); }
+        .trend-indicator.danger  { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(255,77,106,0.3); }
+
+        /* ── Dataframe overrides ── */
+        .stDataFrame { border-radius: 10px !important; overflow: hidden !important; }
+        .stDataFrame table { background: var(--bg-card) !important; }
+        .stDataFrame thead tr th {
+            background: var(--bg-main) !important;
+            color: var(--text-muted) !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: 1px solid var(--border) !important;
+        }
+        .stDataFrame tbody tr td {
+            color: var(--text-secondary) !important;
+            font-size: 13px !important;
+            font-family: var(--mono) !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+        .stDataFrame tbody tr:hover td { background: var(--bg-card-hover) !important; }
+
+        /* ── Divider ── */
+        hr { border-color: var(--border) !important; }
+
+        /* ── Caption ── */
+        .stCaption { color: var(--text-muted) !important; font-size: 11px !important; }
+
+        /* ── Info / success ── */
+        .stAlert { border-radius: 10px !important; }
+
+        /* ── Scroll animation ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .anim { animation: fadeUp 0.5s ease both; }
+        .anim-delay-1 { animation-delay: 0.05s; }
+        .anim-delay-2 { animation-delay: 0.10s; }
+        .anim-delay-3 { animation-delay: 0.15s; }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
 
-def _render_hero() -> None:
-    st.markdown(
-        """
-        <div class="hero-card">
-            <div class="hero-title">Segment Delinquency Intelligence</div>
-            <div class="hero-sub">Forecast short-horizon delinquency, catch anomalies early, and stress test rate shocks with explainable outputs.</div>
-            <div class="hero-tags">
-                <span class="hero-tag">Forecast Bands</span>
-                <span class="hero-tag">Anomaly Alerts</span>
-                <span class="hero-tag">Rate Stress Test</span>
-                <span class="hero-tag">Manager Summary</span>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
+# ─────────────────────────────────────────────
+#  DATA LOADING  (unchanged logic)
+# ─────────────────────────────────────────────
 import io
 
-@st.cache_data(show_spinner="Loading dataset...")
+@st.cache_data(show_spinner="Loading dataset…")
 def _load_selected_dataset(data_source: str, uploaded_file_bytes: bytes | None) -> pd.DataFrame:
     if data_source == DATA_SOURCE_STARTER:
         return load_data(csv_path=SAMPLE_PATH)
-
     if data_source == DATA_SOURCE_EXTENDED:
         if EXTENDED_SAMPLE_PATH.exists():
             return load_data(csv_path=EXTENDED_SAMPLE_PATH)
         return load_data(csv_path=SAMPLE_PATH)
-
     if data_source == DATA_SOURCE_UPLOAD and uploaded_file_bytes is None:
         return pd.DataFrame()
-
     if uploaded_file_bytes is not None:
         uploaded_df = pd.read_csv(io.BytesIO(uploaded_file_bytes))
         return load_data(dataframe=uploaded_df)
-
     return pd.DataFrame()
 
 
-@st.cache_data(show_spinner="Forecasting...")
+@st.cache_data(show_spinner="Forecasting…")
 def get_cached_forecast(_segment_df: pd.DataFrame, horizon: int) -> ForecastResult:
     return forecast_segment_delinquency(_segment_df.copy(), horizon_weeks=horizon)
 
-@st.cache_data(show_spinner="Scanning anomalies...")
+
+@st.cache_data(show_spinner="Scanning anomalies…")
 def get_cached_anomalies(_segment_df: pd.DataFrame, test_periods: int, margin: float):
     return detect_anomalies(_segment_df.copy(), test_periods=test_periods, margin=margin)
 
-@st.cache_data(show_spinner="Running stress test...")
+
+@st.cache_data(show_spinner="Running stress test…")
 def get_cached_scenario(_segment_df: pd.DataFrame, _forecast_df: pd.DataFrame, delta: float) -> tuple[pd.DataFrame, str]:
     try:
         model, feats = fit_interest_rate_model(_segment_df.copy())
@@ -372,142 +654,126 @@ def get_cached_scenario(_segment_df: pd.DataFrame, _forecast_df: pd.DataFrame, d
         return df, "elasticity"
 
 
+# ─────────────────────────────────────────────
+#  CHARTS  (unchanged logic, updated styling)
+# ─────────────────────────────────────────────
 def _build_forecast_figure(segment_df: pd.DataFrame, result: ForecastResult) -> go.Figure:
     fig = go.Figure()
 
     forecast_start = pd.Timestamp(result.forecast_df["date"].iloc[0])
-    forecast_end = pd.Timestamp(result.forecast_df["date"].iloc[-1])
+    forecast_end   = pd.Timestamp(result.forecast_df["date"].iloc[-1])
 
     fig.add_vrect(
-        x0=forecast_start,
-        x1=forecast_end,
-        fillcolor="rgba(255, 177, 0, 0.17)",
-        line_width=0,
-        layer="below",
+        x0=forecast_start, x1=forecast_end,
+        fillcolor="rgba(255,181,71,0.07)", line_width=0, layer="below",
     )
 
-    fig.add_trace(
-        go.Scatter(
-            x=segment_df["date"],
-            y=segment_df["delinquency_rate"],
-            mode="lines+markers",
-            name="Historical delinquency",
-            line=dict(color="#0f4c81", width=3),
-            marker=dict(size=6),
-        )
-    )
+    # Historical
+    fig.add_trace(go.Scatter(
+        x=segment_df["date"], y=segment_df["delinquency_rate"],
+        mode="lines+markers", name="Historical",
+        line=dict(color="#5B9CF6", width=2.5),
+        marker=dict(size=5, color="#5B9CF6"),
+    ))
 
-    fig.add_trace(
-        go.Scatter(
-            x=result.forecast_df["date"],
-            y=result.forecast_df["central"],
-            mode="lines+markers",
-            name="Model forecast",
-            line=dict(color="#c23b49", width=3),
-            marker=dict(size=7),
-        )
-    )
+    # Bands
+    fig.add_trace(go.Scatter(
+        x=result.forecast_df["date"], y=result.forecast_df["upper"],
+        mode="lines", line=dict(width=0), showlegend=False,
+    ))
+    fig.add_trace(go.Scatter(
+        x=result.forecast_df["date"], y=result.forecast_df["lower"],
+        mode="lines", line=dict(width=0), name="80% confidence band",
+        fill="tonexty", fillcolor="rgba(255,77,106,0.10)",
+    ))
 
-    fig.add_trace(
-        go.Scatter(
-            x=result.forecast_df["date"],
-            y=result.forecast_df["baseline"],
-            mode="lines",
-            name="Baseline forecast",
-            line=dict(color="#177245", dash="dot", width=2),
-        )
-    )
+    # Forecast
+    fig.add_trace(go.Scatter(
+        x=result.forecast_df["date"], y=result.forecast_df["central"],
+        mode="lines+markers", name="Model forecast",
+        line=dict(color="#FF4D6A", width=2.5),
+        marker=dict(size=6, color="#FF4D6A", line=dict(color="#080E1A", width=1.5)),
+    ))
 
-    fig.add_trace(
-        go.Scatter(
-            x=result.forecast_df["date"],
-            y=result.forecast_df["upper"],
-            mode="lines",
-            line=dict(width=0),
-            name="Upper band",
-            showlegend=False,
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=result.forecast_df["date"],
-            y=result.forecast_df["lower"],
-            mode="lines",
-            line=dict(width=0),
-            fill="tonexty",
-            fillcolor="rgba(194, 59, 73, 0.18)",
-            name="80% interval",
-        )
-    )
+    # Baseline
+    fig.add_trace(go.Scatter(
+        x=result.forecast_df["date"], y=result.forecast_df["baseline"],
+        mode="lines", name="Naïve baseline",
+        line=dict(color="#00C48C", dash="dot", width=1.8),
+    ))
 
     fig.update_layout(
-        title="Delinquency forecast with uncertainty band",
-        xaxis_title="Date",
-        yaxis_title="Delinquency rate",
-        template="plotly_white",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
-        margin=dict(l=20, r=20, t=60, b=20),
+        title=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="DM Sans", color="#7A8BAE"),
+        xaxis=dict(
+            gridcolor="rgba(255,255,255,0.04)",
+            linecolor="rgba(255,255,255,0.06)",
+            tickfont=dict(size=11),
+        ),
+        yaxis=dict(
+            gridcolor="rgba(255,255,255,0.04)",
+            linecolor="rgba(255,255,255,0.06)",
+            tickformat=".1%",
+            tickfont=dict(size=11),
+        ),
+        legend=dict(
+            orientation="h", yanchor="bottom", y=1.01, xanchor="left", x=0,
+            bgcolor="rgba(0,0,0,0)", font=dict(size=12),
+        ),
+        margin=dict(l=12, r=12, t=16, b=12),
         hovermode="x unified",
+        hoverlabel=dict(bgcolor="#111D33", bordercolor="rgba(255,255,255,0.1)", font=dict(size=12)),
     )
-    fig.update_yaxes(tickformat=".1%")
     return fig
 
 
 def _build_scenario_figure(scenario_df: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
 
-    fig.add_trace(
-        go.Scatter(
-            x=scenario_df["date"],
-            y=scenario_df["baseline_delinquency"],
-            mode="lines+markers",
-            name="Baseline",
-            line=dict(color="#0f4c81", width=3),
-            marker=dict(size=7),
-        )
-    )
+    fig.add_trace(go.Scatter(
+        x=scenario_df["date"], y=scenario_df["baseline_delinquency"],
+        mode="lines+markers", name="Baseline",
+        line=dict(color="#00D4B4", width=2.5),
+        marker=dict(size=6, color="#00D4B4", line=dict(color="#080E1A", width=1.5)),
+    ))
 
-    fig.add_trace(
-        go.Scatter(
-            x=scenario_df["date"],
-            y=scenario_df["stressed_delinquency"],
-            mode="lines+markers",
-            name="Stress (+rate shock)",
-            line=dict(color="#c23b49", width=3),
-            marker=dict(size=7),
-            fill="tonexty",
-            fillcolor="rgba(194, 59, 73, 0.15)",
-        )
-    )
+    fig.add_trace(go.Scatter(
+        x=scenario_df["date"], y=scenario_df["stressed_delinquency"],
+        mode="lines+markers", name="Rate shock applied",
+        line=dict(color="#FF4D6A", width=2.5),
+        marker=dict(size=6, color="#FF4D6A", line=dict(color="#080E1A", width=1.5)),
+        fill="tonexty", fillcolor="rgba(255,77,106,0.08)",
+    ))
 
     fig.update_layout(
-        title="Scenario analysis: baseline vs interest-rate shock",
-        xaxis_title="Date",
-        yaxis_title="Forecast delinquency",
-        template="plotly_white",
-        margin=dict(l=20, r=20, t=60, b=20),
+        title=None,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="DM Sans", color="#7A8BAE"),
+        xaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.06)", tickfont=dict(size=11)),
+        yaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.06)", tickformat=".1%", tickfont=dict(size=11)),
+        legend=dict(orientation="h", yanchor="bottom", y=1.01, xanchor="left", x=0, bgcolor="rgba(0,0,0,0)", font=dict(size=12)),
+        margin=dict(l=12, r=12, t=16, b=12),
         hovermode="x unified",
+        hoverlabel=dict(bgcolor="#111D33", bordercolor="rgba(255,255,255,0.1)", font=dict(size=12)),
     )
-    fig.update_yaxes(tickformat=".1%")
     return fig
 
 
+# ─────────────────────────────────────────────
+#  HELPERS  (unchanged logic)
+# ─────────────────────────────────────────────
 def _prepare_anomaly_display(anomalies_df: pd.DataFrame) -> pd.DataFrame:
     if anomalies_df.empty:
         return anomalies_df
-
     display = anomalies_df.copy()
     display["date"] = pd.to_datetime(display["date"]).dt.strftime("%Y-%m-%d")
     display["anomaly_type"] = display["anomaly_type"].str.upper()
-
-    pct_cols = ["actual", "expected", "lower", "upper", "delta"]
-    for col in pct_cols:
+    for col in ["actual", "expected", "lower", "upper", "delta"]:
         display[col] = display[col].map(lambda v: f"{float(v):.2%}")
-
-    return display[
-        ["date", "anomaly_type", "actual", "expected", "lower", "upper", "delta", "driver_hints"]
-    ]
+    return display[["date", "anomaly_type", "actual", "expected", "lower", "upper", "delta", "driver_hints"]]
 
 
 def _default_text_summary(
@@ -519,28 +785,23 @@ def _default_text_summary(
 ) -> str:
     next_point = forecast_result.forecast_df.iloc[0]
     anomaly_count = int(len(anomalies_df))
-
     avg_stress_delta = float(scenario_df["delta"].mean()) if not scenario_df.empty else 0.0
-
-    summary = (
+    return (
         f"Segment {segment_id}: next forecasted delinquency is {next_point['central']:.2%} "
         f"with an 80% band of {next_point['lower']:.2%} to {next_point['upper']:.2%}. "
         f"Recent anomaly count in the selected window is {anomaly_count}. "
         f"Under a +{delta_rate:.2f}% interest-rate shock, expected delinquency changes by "
         f"about {avg_stress_delta:.2%} on average over the forecast horizon."
     )
-    return summary
 
 
-@st.cache_data(show_spinner="Generating AI summary...", ttl="1h")
+@st.cache_data(show_spinner="Generating AI summary…", ttl="1h")
 def _maybe_generate_llm_summary(fallback_summary: str, context_payload: dict) -> str:
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         return fallback_summary
-
     try:
         import google.generativeai as genai
-
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-1.5-flash")
         prompt = (
@@ -553,109 +814,139 @@ def _maybe_generate_llm_summary(fallback_summary: str, context_payload: dict) ->
             return response.text.strip()
     except Exception:
         pass
-
     return fallback_summary
 
 
+# ─────────────────────────────────────────────
+#  MAIN
+# ─────────────────────────────────────────────
 def main() -> None:
     st.set_page_config(
-        page_title="Segment Delinquency Forecaster",
-        page_icon="N",
+        page_title="Delinquency Intelligence",
+        page_icon="📊",
         layout="wide",
     )
     _apply_custom_style()
 
-    _render_hero()
-
+    # ── SIDEBAR ──────────────────────────────
     with st.sidebar:
-        st.header("Control Center")
-        st.markdown("<div class='sidebar-caption'>Configure data and risk settings</div>", unsafe_allow_html=True)
-        st.markdown("### Data source")
+        st.markdown(
+            """
+            <div class="sidebar-logo">
+                <div class="logo-title">📊 Delinquency Intelligence</div>
+                <div class="logo-sub">Risk Forecasting Platform</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown("<div class='section-label'>Data Source</div>", unsafe_allow_html=True)
         data_source = st.radio(
             "Select dataset",
             label_visibility="collapsed",
             options=[DATA_SOURCE_EXTENDED, DATA_SOURCE_STARTER, DATA_SOURCE_UPLOAD],
             index=0,
         )
+        if data_source == DATA_SOURCE_UPLOAD:
+            uploaded_file = st.file_uploader(
+                "Upload segment-month CSV",
+                type=["csv"],
+                help="Required columns: date, segment_id, repayment_rate, delinquency_rate, income_to_debt_ratio, avg_interest_rate",
+            )
+        else:
+            uploaded_file = None
+            st.markdown(
+                "<div style='font-size:12px; color:#4A5A78; padding: 6px 0 2px;'>File upload available when <b style=\"color:#7A8BAE\">Upload your own CSV</b> is selected.</div>",
+                unsafe_allow_html=True,
+            )
 
-        uploaded_file = st.file_uploader(
-            "Upload segment-month CSV",
-            type=["csv"],
-            disabled=data_source != DATA_SOURCE_UPLOAD,
-        )
-
-        st.divider()
-        st.markdown("### Model controls")
-        horizon_weeks = st.slider("Forecast horizon (weeks)", min_value=4, max_value=8, value=6)
-        delta_rate = st.slider(
-            "Interest-rate shock (+%)", min_value=0.0, max_value=2.0, value=0.5, step=0.1
-        )
-        anomaly_margin = st.slider(
-            "Anomaly margin above/below band",
-            min_value=0.0,
-            max_value=0.02,
-            value=0.0025,
-            step=0.0005,
-            format="%.4f",
-        )
-        min_observations = st.slider(
-            "Minimum observations per segment",
-            min_value=8,
-            max_value=24,
-            value=12,
+        st.markdown("<div class='section-label'>Forecast Settings</div>", unsafe_allow_html=True)
+        horizon_weeks = st.slider(
+            "Forecast horizon (weeks)",
+            min_value=4, max_value=8, value=6,
+            help="How many weeks ahead to project delinquency rates.",
         )
         backtest_periods = st.slider(
             "Backtest periods",
-            min_value=3,
-            max_value=12,
-            value=6,
+            min_value=3, max_value=12, value=6,
+            help="Number of historical periods used to evaluate model accuracy.",
+        )
+        min_observations = st.slider(
+            "Min. observations per segment",
+            min_value=8, max_value=24, value=12,
+            help="Segments with fewer data points are excluded from modeling.",
+        )
+
+        st.markdown("<div class='section-label'>Risk Settings</div>", unsafe_allow_html=True)
+        delta_rate = st.slider(
+            "Interest-rate shock (+%)",
+            min_value=0.0, max_value=2.0, value=0.5, step=0.1,
+            help="Simulates an immediate rate increase of this many percentage points.",
+        )
+        anomaly_margin = st.slider(
+            "Anomaly detection margin",
+            min_value=0.0, max_value=0.02, value=0.0025, step=0.0005, format="%.4f",
+            help="Extra buffer above/below the forecast band before flagging an anomaly.",
         )
         risk_threshold = st.slider(
-            "High-risk threshold",
-            min_value=0.03,
-            max_value=0.20,
-            value=0.08,
-            step=0.005,
+            "High-risk delinquency threshold",
+            min_value=0.03, max_value=0.20, value=0.08, step=0.005,
+            help="Delinquency rate above this level is considered high risk.",
         )
 
         st.markdown(
             """
-            <div class="side-tip">
-                Tip: Start with Extended sample dataset for richer behavior, then switch to Upload your own CSV for real data.
+            <div class="sidebar-tip">
+                <b>💡 Tip</b> Start with the <em>Extended</em> dataset for richer behavior,
+                then switch to <em>Upload</em> for real portfolio data.
             </div>
             """,
             unsafe_allow_html=True,
         )
 
+    # ── DATA LOADING ─────────────────────────
     if data_source == DATA_SOURCE_UPLOAD and uploaded_file is None:
-        st.info("Upload mode is selected. Please choose a CSV file in the sidebar to continue.")
+        st.markdown(
+            """
+            <div style="text-align:center; padding: 80px xpx;">
+                <div style="font-size:48px; margin-bottom:16px;">📂</div>
+                <div style="font-size:20px; font-weight:700; color:#EEF2FF; margin-bottom:8px;">No file selected</div>
+                <div style="font-size:14px; color:#7A8BAE;">Upload a CSV from the sidebar to get started.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.stop()
 
     try:
         file_bytes = uploaded_file.getvalue() if uploaded_file is not None else None
         data = _load_selected_dataset(data_source=data_source, uploaded_file_bytes=file_bytes)
     except Exception as exc:
-        st.error(f"Could not load CSV: {exc}")
-        st.caption(
-            "Expected columns: date, segment_id, repayment_rate, delinquency_rate, income_to_debt_ratio, avg_interest_rate"
-        )
+        st.error(f"⚠️ Could not load CSV: {exc}")
+        st.caption("Expected columns: date, segment_id, repayment_rate, delinquency_rate, income_to_debt_ratio, avg_interest_rate")
         st.stop()
 
     if data.empty:
-        st.info("Upload a CSV or enable sample dataset to continue.")
+        st.info("Select a dataset or upload a CSV to continue.")
         st.stop()
 
     modeled = filter_sparse_segments(data, min_observations=min_observations)
     segment_options = list_segments(modeled)
 
     if not segment_options:
-        st.error("No segment has enough observations after filtering.")
+        st.error("No segment has enough observations after filtering. Try lowering 'Min. observations'.")
         st.stop()
 
-    selected_segment = st.sidebar.selectbox("Customer segment", options=segment_options)
+    selected_segment = st.sidebar.selectbox(
+        "Customer segment",
+        options=segment_options,
+        help="Switch between portfolio segments to compare risk profiles.",
+    )
+
     segment_df = modeled[modeled["segment_id"].astype(str) == selected_segment].copy()
     segment_df = segment_df.sort_values("date").reset_index(drop=True)
 
+    # ── COMPUTE ──────────────────────────────
     forecast_result = get_cached_forecast(segment_df, horizon_weeks)
     anomalies = get_cached_anomalies(
         segment_df,
@@ -663,70 +954,220 @@ def main() -> None:
         margin=anomaly_margin,
     )
     anomalies_df = anomalies_to_frame(anomalies)
-
-    scenario_df, scenario_used = get_cached_scenario(
-        segment_df, forecast_result.forecast_df, delta_rate
-    )
+    scenario_df, scenario_used = get_cached_scenario(segment_df, forecast_result.forecast_df, delta_rate)
 
     next_point = forecast_result.forecast_df.iloc[0]
     last_actual = float(segment_df["delinquency_rate"].iloc[-1])
     avg_stress_delta = float(scenario_df["delta"].mean()) if not scenario_df.empty else 0.0
     interval_width = float(next_point["upper"] - next_point["lower"])
+    forecast_change = float(next_point["central"]) - last_actual
 
-    kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
-    kpi1.metric("Latest delinquency", f"{last_actual:.2%}")
-    kpi2.metric("Next forecast", f"{float(next_point['central']):.2%}", f"{float(next_point['central'] - last_actual):+.2%}")
-    kpi3.metric("80% interval width", f"{interval_width:.2%}")
-    kpi4.metric("Avg stress uplift", f"{avg_stress_delta:.2%}")
-    kpi5.metric("Anomalies in window", str(len(anomalies_df)))
-
-    tab_forecast, tab_anomalies, tab_scenario, tab_summary = st.tabs(
-        ["Forecast view", "Anomaly monitor", "Scenario lab", "Summary & backtest"]
+    # ── TOP BAR ──────────────────────────────
+    st.markdown(
+        f"""
+        <div class="top-bar">
+            <div class="app-title">Segment <span>Delinquency Intelligence</span></div>
+            <div class="segment-badge">📍 {selected_segment}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    with tab_forecast:
-        st.plotly_chart(_build_forecast_figure(segment_df, forecast_result), use_container_width=True)
-        st.markdown(
-            """
-            <div class="note-card">
-                How to read this chart: the blue line is observed history, red is model forecast, green dotted is baseline,
-                and the shaded red band is the uncertainty range. If future actuals break above the band,
-                risk is rising faster than expected.
+    # ── INSIGHT STRIP ────────────────────────
+    trend_direction = "rising ⚠️" if forecast_change > 0.005 else ("falling ✅" if forecast_change < -0.005 else "stable 📊")
+    anomaly_txt = f"{len(anomalies_df)} anomaly{'s' if len(anomalies_df) != 1 else ''} detected" if anomalies_df.empty is False else "No anomalies detected"
+    icon = "⚠️" if len(anomalies_df) > 0 or forecast_change > 0.005 else "✅"
+
+    st.markdown(
+        f"""
+        <div class="insight-strip anim">
+            <div class="insight-icon">{icon}</div>
+            <div class="insight-text">
+                <div class="insight-label">Key Insight — Segment {selected_segment}</div>
+                <div class="insight-main">
+                    Next week forecast is <b>{float(next_point['central']):.2%}</b>
+                    (trend is <b>{trend_direction}</b>).
+                    {anomaly_txt} in backtest window.
+                    A +{delta_rate:.1f}% rate shock would lift delinquency by ~<b>{avg_stress_delta:.2%}</b> on average.
+                </div>
             </div>
-            """,
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # ── KPI CARDS ────────────────────────────
+    delta_sign = "▲" if forecast_change > 0 else "▼"
+    delta_class = "up" if forecast_change > 0 else "down"
+    anomaly_color = "color-red" if len(anomalies_df) > 0 else "color-green"
+    stress_color = "color-red" if avg_stress_delta > 0.01 else "color-amber"
+    delinquency_color = "color-red" if last_actual > risk_threshold else "color-green"
+    forecast_color = "color-red" if float(next_point["central"]) > risk_threshold else "color-teal"
+
+    def _kpi_card(col, css_color: str, icon: str, label: str, value: str, delta_text: str, delta_cls: str) -> None:
+        col.markdown(
+            f'<div class="kpi-card {css_color}">'
+            f'<span class="kpi-icon">{icon}</span>'
+            f'<div class="kpi-label">{label}</div>'
+            f'<div class="kpi-value">{value}</div>'
+            f'<div class="kpi-delta {delta_cls}">{delta_text}</div>'
+            '<div class="kpi-bar"></div></div>',
             unsafe_allow_html=True,
         )
 
-    with tab_anomalies:
-        st.subheader("Detected anomalies")
-        if anomalies_df.empty:
-            st.success("No anomalies in the selected backtest window.")
+    _kc1, _kc2, _kc3, _kc4, _kc5 = st.columns(5)
+    _kpi_card(_kc1, delinquency_color, "📈", "Latest Delinquency",
+              f"{last_actual:.2%}", "Current rate", "neutral")
+    _kpi_card(_kc2, forecast_color, "🎯", "Next Forecast",
+              f"{float(next_point['central']):.2%}",
+              f"{delta_sign} {abs(forecast_change):.2%} vs now", delta_class)
+    _kpi_card(_kc3, "color-amber", "↔️", "80% Band Width",
+              f"{interval_width:.2%}", "Uncertainty range", "neutral")
+    _kpi_card(_kc4, stress_color, "⚡", "Rate Shock Impact",
+              f"{avg_stress_delta:.2%}", f"+{delta_rate:.1f}% shock avg lift", "up")
+    _kpi_card(_kc5, anomaly_color, "🔍", "Anomalies Found",
+              str(len(anomalies_df)),
+              "Needs review" if len(anomalies_df) > 0 else "All clear",
+              "up" if len(anomalies_df) > 0 else "down")
+
+    st.markdown("<div style='margin-bottom:12px'></div>", unsafe_allow_html=True)
+
+    # ── TABS ─────────────────────────────────
+    tab_forecast, tab_anomalies, tab_scenario, tab_summary = st.tabs([
+        "📈  Forecast View",
+        "🔍  Anomaly Monitor",
+        "⚡  Scenario Lab",
+        "📋  Executive Summary",
+    ])
+
+    # ── FORECAST TAB ─────────────────────────
+    with tab_forecast:
+        # Trend status
+        if forecast_change > 0.01:
+            indicator_html = '<span class="trend-indicator danger">⚠️ Risk Increasing</span>'
+            guidance = "Delinquency is projected to rise meaningfully. Monitor closely and consider early interventions."
+        elif forecast_change > 0.003:
+            indicator_html = '<span class="trend-indicator warning">📊 Slight Upward Drift</span>'
+            guidance = "Modest increase projected. Maintain standard monitoring cadence."
         else:
-            st.dataframe(_prepare_anomaly_display(anomalies_df), use_container_width=True)
-        st.caption("High anomaly means actual delinquency is above the upper forecast band plus margin.")
+            indicator_html = '<span class="trend-indicator stable">✅ Stable Trend</span>'
+            guidance = "Delinquency appears stable within normal variation. No immediate action required."
 
-    with tab_scenario:
-        st.plotly_chart(_build_scenario_figure(scenario_df), use_container_width=True)
-        scenario_table = scenario_df.copy()
-        scenario_table["date"] = pd.to_datetime(scenario_table["date"]).dt.strftime("%Y-%m-%d")
-        for col in ["baseline_delinquency", "stressed_delinquency", "delta"]:
-            scenario_table[col] = scenario_table[col].map(lambda v: f"{float(v):.2%}")
-        st.dataframe(scenario_table, use_container_width=True)
-        st.caption(f"Stress model in use: {scenario_used}.")
-
-    with tab_summary:
-        st.subheader("Manager summary")
         st.markdown(
             f"""
-            <div class="note-card">
-                Segment selected: <b>{selected_segment}</b><br>
-                Forecast model: <b>{forecast_result.model_name}</b><br>
-                Stress model: <b>{scenario_used}</b>
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                {indicator_html}
+                <span style="font-size:13px; color:#7A8BAE;">{guidance}</span>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
+        st.markdown('<div class="chart-wrap">', unsafe_allow_html=True)
+        st.plotly_chart(_build_forecast_figure(segment_df, forecast_result), use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown(
+            """
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px;">
+                <div style="background:rgba(91,156,246,0.08); border:1px solid rgba(91,156,246,0.2); border-radius:10px; padding:12px 14px;">
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#5B9CF6; text-transform:uppercase; margin-bottom:4px;">🔵 Blue line</div>
+                    <div style="font-size:12px; color:#7A8BAE;">Observed historical delinquency rate.</div>
+                </div>
+                <div style="background:rgba(255,77,106,0.08); border:1px solid rgba(255,77,106,0.2); border-radius:10px; padding:12px 14px;">
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#FF4D6A; text-transform:uppercase; margin-bottom:4px;">🔴 Red line + band</div>
+                    <div style="font-size:12px; color:#7A8BAE;">Model forecast with 80% confidence interval. Actuals above band = elevated risk.</div>
+                </div>
+                <div style="background:rgba(0,196,140,0.08); border:1px solid rgba(0,196,140,0.2); border-radius:10px; padding:12px 14px;">
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; color:#00C48C; text-transform:uppercase; margin-bottom:4px;">🟢 Dotted line</div>
+                    <div style="font-size:12px; color:#7A8BAE;">Naïve baseline — simple reference to benchmark model outperformance.</div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # ── ANOMALY TAB ──────────────────────────
+    with tab_anomalies:
+        count = len(anomalies_df)
+        zero_class = "zero" if count == 0 else ""
+        summary_text = "No anomalies detected in the backtest window — delinquency stayed within expected bands." if count == 0 else f"{count} period{'s' if count != 1 else ''} where delinquency broke outside the forecast band plus margin."
+
+        st.markdown(
+            f"""
+            <div class="anomaly-summary">
+                <div class="count-bubble {zero_class}">{count}</div>
+                <div class="count-text">
+                    <div class="main">{'✅ Clean window' if count == 0 else '⚠️ Anomalies detected'}</div>
+                    <div class="sub">{summary_text}</div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if anomalies_df.empty:
+            st.markdown(
+                """
+                <div style="text-align:center; padding:48px 20px;">
+                    <div style="font-size:40px; margin-bottom:12px;">🟢</div>
+                    <div style="font-size:16px; font-weight:600; color:#00C48C; margin-bottom:6px;">All Clear</div>
+                    <div style="font-size:13px; color:#7A8BAE;">Delinquency remained within expected forecast bands during the backtest window.</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        else:
+            st.dataframe(_prepare_anomaly_display(anomalies_df), use_container_width=True)
+
+        st.caption("Anomaly = actual delinquency rate exceeded the upper forecast band + anomaly margin, or fell below the lower band.")
+
+    # ── SCENARIO TAB ─────────────────────────
+    with tab_scenario:
+        if not scenario_df.empty:
+            baseline_avg = float(scenario_df["baseline_delinquency"].mean())
+            stressed_avg = float(scenario_df["stressed_delinquency"].mean())
+            avg_delta_pct = stressed_avg - baseline_avg
+
+            st.markdown(
+                f"""
+                <div class="scenario-compare">
+                    <div class="scenario-card baseline">
+                        <div class="sc-label">📊 Baseline Forecast (avg)</div>
+                        <div class="sc-value">{baseline_avg:.2%}</div>
+                        <div class="sc-sub">No rate change applied</div>
+                    </div>
+                    <div class="scenario-arrow">
+                        →<br>
+                        <span style="font-size:13px; color:#FFB547; font-weight:700;">+{delta_rate:.1f}%<br>rate shock</span>
+                    </div>
+                    <div class="scenario-card stressed">
+                        <div class="sc-label">⚡ Stressed Forecast (avg)</div>
+                        <div class="sc-value">{stressed_avg:.2%}</div>
+                        <div class="sc-sub">After interest rate shock</div>
+                        <div><span class="scenario-delta-badge">▲ +{avg_delta_pct:.2%} avg uplift</span></div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        st.markdown('<div class="chart-wrap">', unsafe_allow_html=True)
+        st.plotly_chart(_build_scenario_figure(scenario_df), use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        if not scenario_df.empty:
+            st.markdown("<br>", unsafe_allow_html=True)
+            scenario_table = scenario_df.copy()
+            scenario_table["date"] = pd.to_datetime(scenario_table["date"]).dt.strftime("%Y-%m-%d")
+            for col in ["baseline_delinquency", "stressed_delinquency", "delta"]:
+                scenario_table[col] = scenario_table[col].map(lambda v: f"{float(v):.2%}")
+            st.dataframe(scenario_table, use_container_width=True)
+
+        st.caption(f"Stress model in use: {scenario_used}. The shaded area represents the additional delinquency risk introduced by the rate shock.")
+
+    # ── SUMMARY TAB ──────────────────────────
+    with tab_summary:
         fallback_summary = _default_text_summary(
             segment_id=selected_segment,
             forecast_result=forecast_result,
@@ -734,40 +1175,65 @@ def main() -> None:
             scenario_df=scenario_df,
             delta_rate=delta_rate,
         )
-
         summary_payload = {
             "segment": selected_segment,
             "next_forecast": forecast_result.forecast_df.iloc[0].to_dict(),
             "anomalies": len(anomalies_df),
-            "avg_stress_delta": float(scenario_df["delta"].mean()),
+            "avg_stress_delta": avg_stress_delta,
         }
         final_summary = _maybe_generate_llm_summary(fallback_summary, summary_payload)
 
-        st.markdown(f"<div class='summary-card'>{final_summary}</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="exec-card">
+                <div class="exec-header">
+                    <span style="font-size:20px;">📋</span>
+                    <div class="exec-title">Executive Summary</div>
+                    <div class="exec-badge">{'AI Generated' if os.getenv('GEMINI_API_KEY') else 'Auto Generated'}</div>
+                </div>
+                <div class="exec-body">{final_summary}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        st.subheader("Backtest metrics (all segments)")
+        st.markdown(
+            f"""
+            <div style="margin-bottom: 20px;">
+                <span class="meta-pill">🏷️ Segment: <span>{selected_segment}</span></span>
+                <span class="meta-pill">🤖 Forecast model: <span>{forecast_result.model_name}</span></span>
+                <span class="meta-pill">⚡ Stress model: <span>{scenario_used}</span></span>
+                <span class="meta-pill">📅 Horizon: <span>{horizon_weeks} weeks</span></span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown("---")
+        st.markdown(
+            "<div style='font-size:13px; font-weight:700; color:#EEF2FF; margin-bottom:12px; letter-spacing:-0.01em;'>📊 Backtest Metrics — All Segments</div>",
+            unsafe_allow_html=True,
+        )
+
         metrics = evaluate_models(modeled, test_periods=backtest_periods, risk_threshold=risk_threshold)
         if metrics.empty:
-            st.write("Not enough observations to compute backtests yet.")
+            st.markdown(
+                """
+                <div style="text-align:center; padding:32px; background:rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.07); border-radius:12px;">
+                    <div style="font-size:13px; color:#4A5A78;">Not enough observations to compute backtest metrics yet.<br>Try reducing 'Min. observations' or 'Backtest periods'.</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         else:
             display_metrics = metrics.copy()
-            for col in [
-                "model_mae",
-                "model_rmse",
-                "naive_mae",
-                "naive_rmse",
-                "rolling_mae",
-                "rolling_rmse",
-            ]:
+            for col in ["model_mae", "model_rmse", "naive_mae", "naive_rmse", "rolling_mae", "rolling_rmse"]:
                 display_metrics[col] = display_metrics[col].map(lambda v: f"{float(v):.4f}")
-
             for col in ["model_mape", "naive_mape", "rolling_mape"]:
                 display_metrics[col] = display_metrics[col].map(lambda v: f"{float(v):.2f}%")
-
             display_metrics["roc_auc"] = display_metrics["roc_auc"].map(
                 lambda v: "n/a" if pd.isna(v) else f"{float(v):.3f}"
             )
-
             st.dataframe(display_metrics, use_container_width=True)
 
 

@@ -106,3 +106,6 @@ If GEMINI_API_KEY is set, the app attempts to produce a plain-language summary f
 ## Notes for Hackathon Judges
 - The app intentionally uses explainable and auditable methods over opaque black-box modeling.
 - Every output panel maps directly to an operational risk workflow: forecast, alert, stress test, and explain.
+
+#to run this file :
+- python -m streamlit run src/streamlit_app.py
