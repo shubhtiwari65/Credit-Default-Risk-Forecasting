@@ -1,111 +1,224 @@
 # Segment Delinquency Forecasting Dashboard
 
-## Overview
-This project is a credit-risk analytics app designed for a NatWest-style lending context where segment-level delinquency needs close monitoring. It forecasts short-horizon delinquency, detects unusual repayment stress, and simulates how default risk changes when interest rates rise. The focus is practical explainability: each output can be shown to non-technical stakeholders such as portfolio managers or risk committees.
+## 1. Overview
 
-## Features
-- Short-horizon delinquency forecasting (4-6 weeks mapped to 1-2 monthly periods)
-- Explainable baseline and SARIMAX forecasting per segment
-- Prediction intervals (80% default) for uncertainty bands
-- Anomaly detection when actual delinquency falls outside forecast bands
-- Scenario stress testing under interest-rate shocks (for example +0.5%)
-- Streamlit dashboard with charts, anomalies table, and manager-friendly summary text
-- Optional Gemini-generated natural-language summary if API key is set
+This project is a **credit-risk analytics application** designed for segment-level delinquency monitoring in banking and lending contexts. It forecasts short-horizon delinquency rates using SARIMAX models, detects anomalous repayment stress patterns, and simulates how default risk changes under interest-rate shocks. The dashboard provides explainable, actionable insights for portfolio managers and risk committees, enabling data-driven decision-making on credit exposure and risk mitigation strategies.
 
-## Repository Layout
-project/
-  src/
-    data_loader.py
-    forecasting.py
-    anomalies.py
-    scenarios.py
-    evaluation.py
-    streamlit_app.py
-  tests/
-    test_pipeline.py
-    test_evaluation.py
-  assets/
-    sample_dataset.csv
-  README.md
-  requirements.txt
-  .env.example
+**Problem Solved:** Banks need early warning signals for deteriorating credit quality at the segment level. This tool provides interpretable forecasts with uncertainty bands and anomaly detection to catch emerging risks before they escalate.
 
-## Setup
-1. Create and activate a virtual environment.
-2. Install dependencies:
+**Intended Users:** Risk managers, credit portfolio analysts, compliance teams, and executive stakeholders in financial institutions.
 
-   pip install -r requirements.txt
+## 2. Features
 
-3. Run the Streamlit app:
+### ✅ Implemented & Working
+- **Short-horizon delinquency forecasting** (4-8 weeks → 1-2 months) using SARIMAX(1,0,0) models
+- **Explainable baseline forecasts** with Simple Exponential Smoothing fallback
+- **80% prediction intervals** for uncertainty quantification
+- **Anomaly detection** via rolling-origin evaluation with configurable margins
+- **Interest-rate scenario stress testing** with sensitivity-based delinquency projections
+- **Streamlit interactive dashboard** with real-time segment selection and parameter control
+- **CSV upload support** for custom datasets with schema validation
+- **Backtesting & evaluation** with MAE, RMSE, MAPE, and ROC-AUC metrics
+- **Driver hints** identifying feature anomalies (income, interest rates) contributing to alerts
+- **Optional AI summaries** via Google Gemini for non-technical stakeholders
 
-   streamlit run src/streamlit_app.py
+### Dashboard Components
+- Data source selector (sample datasets or custom CSV)
+- Segment-level filtering and selection
+- Forecast view with historical + predicted delinquency bands
+- Anomaly monitor showing detected outliers and driver explanations
+- Scenario laboratory for rate shock simulations
+- Summary tab with backtesting results
 
-4. Optional: set environment variables from .env.example (for Gemini summaries).
+## 3. Install and Run Instructions
 
-## Data Format
-Input rows are expected at segment-month granularity with these required columns:
-- date (month-end date)
-- segment_id
-- repayment_rate (0 to 1)
-- delinquency_rate (0 to 1)
-- income_to_debt_ratio
-- avg_interest_rate
+### Prerequisites
+- Python 3.9+
+- pip package manager
+- Virtual environment (recommended)
 
-Optional macro columns currently supported:
-- unemployment_rate
-- gdp_growth
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/shubhtiwari65/Credit-Default-Risk-Forecasting.git
+cd Credit-Default-Risk-Forecasting
+```
 
-## Usage Examples
-### 1) Dashboard flow
-- Open the app with sample data or upload your own CSV.
-- Choose a customer segment from the dropdown.
-- Adjust horizon and interest-rate shock in the sidebar.
-- Review forecast band, anomaly table, and stressed scenario curve.
+### Step 2: Create Virtual Environment
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\Activate.ps1
+# On macOS/Linux:
+source venv/bin/activate
+```
 
-### 2) Backtesting from CLI
-Run rolling-origin evaluation over all segments:
+### Step 3: Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
+### Step 4: Run the Application
+```bash
+# Streamlit version (recommended for local use)
+python -m streamlit run src/streamlit_app.py
+
+# Opens at http://localhost:8501
+```
+
+### Step 5 (Optional): Configure Environment Variables
+Copy `.env.example` to `.env` and set your API key for AI summaries:
+```
+GOOGLE_GENERATIVEAI_API_KEY=your_api_key_here
+```
+
+## 4. Tech Stack
+
+### Programming & Frameworks
+- **Language:** Python 3.11+
+- **Frontend:** Streamlit (interactive dashboard)
+- **Web Framework:** Flask (for Vercel deployment alternative)
+
+### Data & ML Libraries
+- **Data Processing:** Pandas, NumPy
+- **Time Series Forecasting:** Statsmodels (SARIMAX, SimpleExpSmoothing)
+- **Machine Learning:** Scikit-learn (regression, metrics)
+- **Visualization:** Plotly (interactive charts)
+
+### AI/LLM
+- **Google Generative AI:** Gemini API (optional natural-language summaries)
+
+### Cloud & Deployment
+- **Deployment Platforms:** Streamlit Cloud, Vercel (Flask version)
+- **Version Control:** Git/GitHub
+
+### Testing
+- **Testing Framework:** Pytest
+
+## 5. Usage Examples
+
+### Example 1: Run the Dashboard Locally
+```bash
+python -m streamlit run src/streamlit_app.py
+```
+- Open browser at `http://localhost:8501`
+- Select "Extended sample dataset" from sidebar
+- Choose a segment (e.g., `age_25_34_personal_loan`)
+- Adjust "Forecast horizon (weeks)" slider from 4 to 8
+- Click tabs to view Forecast, Anomalies, and Scenario results
+
+### Example 2: Load Custom Data
+1. Prepare CSV with columns:
+   - `date` (month-end date, e.g., 2025-01-31)
+   - `segment_id` (string identifier)
+   - `delinquency_rate` (0-1 scale)
+   - `repayment_rate` (0-1 scale)
+   - `income_to_debt_ratio` (numeric)
+   - `avg_interest_rate` (numeric)
+2. Select "Upload your own CSV" in sidebar
+3. Upload file and select segment
+
+### Example 3: Run Backtesting from CLI
+```bash
 python -m src.evaluation --input assets/sample_dataset.csv --test-periods 6 --risk-threshold 0.08
+```
+Output: MAE, RMSE, MAPE, ROC-AUC, confusion matrix per segment
 
-### 3) Screenshots (replace with your own captures)
-![Forecast panel](assets/forecast_panel.svg)
-![Anomalies panel](assets/anomalies_panel.svg)
-![Scenario panel](assets/scenario_panel.svg)
+### Sample Output (JSON from Forecast)
+```json
+{
+  "segment_id": "age_25_34_personal_loan",
+  "model_name": "SARIMAX(1,0,0)",
+  "forecast": [
+    {
+      "date": "2025-11-30",
+      "central": 0.0415,
+      "lower": 0.0385,
+      "upper": 0.0445
+    }
+  ],
+  "diagnostics": {"aic": 125.43}
+}
+```
 
-## Model Notes
-### Forecasting
-- Baseline: Simple Exponential Smoothing (with rolling-mean fallback).
-- Main model: SARIMAX(1,0,0), optionally using exogenous variables such as income_to_debt_ratio and avg_interest_rate.
+## 6. Architecture
 
-### Uncertainty Bands
-- Forecast intervals come from model confidence intervals.
-- If model fitting fails, baseline forecasts are used with a residual-spread heuristic to form bands.
+### System Design
+```
+Streamlit Frontend (src/streamlit_app.py)
+    ↓
+Core Business Logic
+├─ Data Loader (src/data_loader.py)        → CSV parsing, schema validation
+├─ Forecasting (src/forecasting.py)        → SARIMAX & baseline models
+├─ Anomalies (src/anomalies.py)           → Rolling-origin detection
+├─ Scenarios (src/scenarios.py)           → Stress testing & sensitivity
+└─ Evaluation (src/evaluation.py)         → Backtesting & metrics
 
-### Anomaly Detection
-- In a recent test window, one-step forecasts are generated using rolling-origin evaluation.
-- A point is flagged when:
-  - actual > upper_band + margin (high anomaly), or
-  - actual < lower_band - margin (low anomaly)
-- Driver hints compare current feature levels versus recent averages.
+Data Sources
+├─ assets/sample_dataset.csv               → Starter sample (~8 segments)
+└─ assets/demo_dataset_extended.csv        → Extended sample (~15 segments)
 
-### Interest-Rate Scenario Stress Test
-- Primary approach: linear regression sensitivity on delinquency using
-  avg_interest_rate, income_to_debt_ratio, repayment_rate, and optional macro features.
-- Stress simulation: apply +delta to avg_interest_rate and adjust the time-series forecast by predicted regression uplift.
-- Fallback approach: elasticity scaling,
-  stressed = baseline x (1 + elasticity x delta_rate).
+Optional: Google Gemini API → LLM summaries
+```
 
-## Evaluation
-The evaluation module runs rolling-origin backtests per segment and reports:
-- Forecast metrics vs naive and rolling baselines: MAE, RMSE, MAPE
-- Classification-style checks for high-delinquency alerts: ROC-AUC and confusion matrix
+### Data Flow
+1. **Load:** User selects dataset → CSV loaded and validated
+2. **Filter:** Segments with <12 months dropped automatically
+3. **Select:** User picks segment from dropdown
+4. **Forecast:** SARIMAX fits on history → generates 1-2 month predictions
+5. **Detect:** Rolling-origin evaluation flags anomalies
+6. **Stress:** Linear regression applies interest-rate scenario
+7. **Display:** Charts, tables, and summaries rendered
 
-## Optional LLM Summary
-If GEMINI_API_KEY is set, the app attempts to produce a plain-language summary for non-technical managers. Without a key, it uses a deterministic template summary.
+## 7. Limitations
 
-## Notes for Hackathon Judges
-- The app intentionally uses explainable and auditable methods over opaque black-box modeling.
-- Every output panel maps directly to an operational risk workflow: forecast, alert, stress test, and explain.
+### Current Limitations
+- **Forecast horizon:** Fixed to 4-8 weeks (4-6 weeks = 1 month, 7+ weeks = 2 months) due to weekly-to-monthly mapping
+- **Segment granularity:** Monthly data only; sub-monthly (weekly) data not supported
+- **Model complexity:** SARIMAX(1,0,0) is simple; seasonal patterns not captured
+- **Data requirements:** Minimum 12 observations per segment; sparse segments excluded
+- **Exogenous variables:** Limited to income, interest rate, unemployment, GDP growth; custom features not yet supported
+- **Scalability:** Single-threaded; large datasets (100k+ rows) may be slow
+- **Deployment:** Vercel version has 100-second timeout limit; long forecasts may fail
+- **No real-time updates:** Static CSV inputs only; live data feeds not integrated
+- **AI summaries:** Optional only; requires Gemini API key; not all users have access
 
-#to run this file :
-- python -m streamlit run src/streamlit_app.py
+## 8. Future Improvements
+
+### Short-term (Next Sprint)
+- [ ] Multi-step forecasting with auto-ARIMA for model selection
+- [ ] Custom exogenous variable support for user-provided features
+- [ ] Export functionality (PDF reports, CSV downloads)
+- [ ] Dark/light theme toggle
+- [ ] Performance optimization for 100k+ row datasets
+
+### Medium-term (Q2 2026)
+- [ ] Real-time data integration (SQL database, cloud data warehouse)
+- [ ] Ensemble forecasting (combine SARIMAX + Prophet + LSTM)
+- [ ] Causal inference for driver attribution (DoWhy library)
+- [ ] Multi-segment portfolio risk aggregation
+- [ ] Historical scenario backtesting (past rate shocks)
+
+### Long-term (Q3-Q4 2026)
+- [ ] Deep learning models (LSTM, Transformer) for longer-horizon forecasts
+- [ ] Hierarchical forecasting (portfolio → segment → product)
+- [ ] Automatic model retraining pipeline
+- [ ] Mobile app (React Native)
+- [ ] REST API with authentication for enterprise integration
+- [ ] Real-time alerting system (Slack/Email integration)
+
+### Quality & DevOps
+- [ ] Increase test coverage (currently ~70%)
+- [ ] CI/CD pipeline with GitHub Actions
+- [ ] Docker containerization for consistent deployment
+- [ ] Monitoring & logging (DataDog, Sentry)
+- [ ] Documentation improvements (API docs, architecture diagrams)
+
+## Contact & Support
+
+For questions or issues:
+- **GitHub Issues:** [Project Issues](https://github.com/shubhtiwari65/Credit-Default-Risk-Forecasting/issues)
+- **Email:** shubhtiwari65@example.com
+
+---
+
+**Last Updated:** April 12, 2026
