@@ -8,6 +8,11 @@ import plotly.graph_objects as go
 import streamlit as st
 
 try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
+try:
     from src.anomalies import anomalies_to_frame, detect_anomalies
     from src.data_loader import filter_sparse_segments, list_segments, load_data
     from src.evaluation import evaluate_models
@@ -21,8 +26,12 @@ except ImportError:
     from scenarios import fit_interest_rate_model, stress_test_interest_rate
 
 
-SAMPLE_PATH = Path(__file__).resolve().parents[1] / "assets" / "sample_dataset.csv"
-EXTENDED_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "assets" / "demo_dataset_extended.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if load_dotenv is not None:
+    load_dotenv(PROJECT_ROOT / ".env")
+
+SAMPLE_PATH = PROJECT_ROOT / "assets" / "sample_dataset.csv"
+EXTENDED_SAMPLE_PATH = PROJECT_ROOT / "assets" / "demo_dataset_extended.csv"
 
 DATA_SOURCE_STARTER = "Starter sample dataset"
 DATA_SOURCE_EXTENDED = "Extended sample dataset"
@@ -766,11 +775,22 @@ def _default_text_summary(
     )
 
 
+def _is_truthy_env(var_name: str, default: bool = False) -> bool:
+    value = os.getenv(var_name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _gemini_enabled() -> bool:
+    return _is_truthy_env("USE_GEMINI_SUMMARY", default=False) and bool(os.getenv("GEMINI_API_KEY"))
+
+
 @st.cache_data(show_spinner="Generating AI summary…", ttl="1h")
 def _maybe_generate_llm_summary(fallback_summary: str, context_payload: dict) -> str:
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
+    if not _gemini_enabled():
         return fallback_summary
+    api_key = os.getenv("GEMINI_API_KEY", "")
     try:
         import google.generativeai as genai
         genai.configure(api_key=api_key)
@@ -1160,7 +1180,7 @@ def main() -> None:
                 <div class="exec-header">
                     <span style="font-size:20px;">📋</span>
                     <div class="exec-title">Executive Summary</div>
-                    <div class="exec-badge">{'AI Generated' if os.getenv('GEMINI_API_KEY') else 'Auto Generated'}</div>
+                    <div class="exec-badge">{'AI Generated' if _gemini_enabled() else 'Auto Generated'}</div>
                 </div>
                 <div class="exec-body">{final_summary}</div>
             </div>

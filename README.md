@@ -33,7 +33,7 @@ This project is a **Credit-Default-Risk-Forecasting application** designed for s
 ## 3. Install and Run Instructions
 
 ### Prerequisites
-- Python 3.9+
+- Python 3.11+
 - pip package manager
 - Virtual environment (recommended)
 
@@ -66,17 +66,21 @@ python -m streamlit run src/streamlit_app.py
 ```
 
 ### Step 5 (Optional): Configure Environment Variables
-Copy `.env.example` to `.env` and set your API key for AI summaries:
+Copy `.env.example` to `.env` and configure optional AI summaries:
 ```
-GOOGLE_GENERATIVEAI_API_KEY=your_api_key_here
+GEMINI_API_KEY=your_api_key_here
+USE_GEMINI_SUMMARY=true
 ```
+
+Notes:
+- `USE_GEMINI_SUMMARY=false` disables LLM summary generation even if a key is present.
+- If no key is configured, the app falls back to deterministic auto-generated summaries.
 
 ## 4. Tech Stack
 
 ### Programming & Frameworks
 - **Language:** Python 3.11+
 - **Frontend:** Streamlit (interactive dashboard)
-- **Web Framework:** Flask (for Vercel deployment alternative)
 
 ### Data & ML Libraries
 - **Data Processing:** Pandas, NumPy
@@ -88,7 +92,7 @@ GOOGLE_GENERATIVEAI_API_KEY=your_api_key_here
 - **Google Generative AI:** Gemini API (optional natural-language summaries)
 
 ### Cloud & Deployment
-- **Deployment Platforms:** Streamlit Cloud, Vercel (Flask version)
+- **Deployment Platforms:** Streamlit Community Cloud, Render/Railway, Docker (Cloud Run/App Service/ECS)
 - **Version Control:** Git/GitHub
 
 ### Testing
@@ -197,11 +201,44 @@ Optional: Google Gemini API → LLM summaries
 - **Data requirements:** Minimum 12 observations per segment; sparse segments excluded
 - **Exogenous variables:** Limited to income, interest rate, unemployment, GDP growth; custom features not yet supported
 - **Scalability:** Single-threaded; large datasets (100k+ rows) may be slow
-- **Deployment:** Vercel version has 100-second timeout limit; long forecasts may fail
 - **No real-time updates:** Static CSV inputs only; live data feeds not integrated
-- **AI summaries:** Optional only; requires Gemini API key; not all users have access
+- **AI summaries:** Optional only; requires both `USE_GEMINI_SUMMARY=true` and `GEMINI_API_KEY`
 
-## 9. Future Improvements
+## 9. Deployment Guide
+
+This repository is deployment-ready for Streamlit-based hosting.
+
+### A) Streamlit Community Cloud (fastest)
+1. Push this repository to GitHub.
+2. In Streamlit Community Cloud, create a new app from the repo.
+3. Set main file path to `src/streamlit_app.py`.
+4. In app secrets or environment variables, optionally set `USE_GEMINI_SUMMARY=true` and `GEMINI_API_KEY=...`.
+5. Deploy.
+
+### B) Render or Railway (managed service)
+Use these settings:
+- **Build command:** `pip install -r requirements.txt`
+- **Start command:** `streamlit run src/streamlit_app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true`
+
+The repo includes a `Procfile` with this startup command for compatibility.
+
+### C) Docker (portable production)
+Build and run locally:
+
+```bash
+docker build -t credit-default-risk-forecasting .
+docker run -p 8501:8501 --env-file .env credit-default-risk-forecasting
+```
+
+Then open `http://localhost:8501`.
+
+### Deployment Files Added
+- `runtime.txt` pins Python runtime for cloud environments that support runtime files.
+- `.streamlit/config.toml` sets headless defaults and disables usage telemetry collection.
+- `Procfile` provides a platform-friendly web process command.
+- `Dockerfile` and `.dockerignore` support containerized deployment.
+
+## 10. Future Improvements
 
 ### Short-term (Next Sprint)
 - [ ] Multi-step forecasting with auto-ARIMA for model selection
