@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-label="Scenario panel placeholder">
+  <defs>
+    <linearGradient id="bg3" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#eef7ff" />
+      <stop offset="100%" stop-color="#fff5ec" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="650" fill="url(#bg3)"/>
+  <rect x="80" y="80" width="1040" height="490" rx="18" fill="#ffffff" stroke="#2a4a67" stroke-width="2"/>
+  <text x="600" y="160" text-anchor="middle" font-family="Verdana" font-size="42" fill="#1c344c">Scenario Panel Screenshot Placeholder</text>
+  <text x="600" y="220" text-anchor="middle" font-family="Verdana" font-size="24" fill="#4e6375">Replace with baseline vs stressed curve screenshot</text>
+</svg>
