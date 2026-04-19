@@ -29,6 +29,20 @@ DATA_SOURCE_EXTENDED = "Extended sample dataset"
 DATA_SOURCE_UPLOAD = "Upload your own CSV"
 
 
+def _format_segment_name(segment_id: str) -> str:
+    """Convert segment_id like 'age_25_34_personal_loan' to 'Age 25-34 Personal Loan'"""
+    if not segment_id:
+        return segment_id
+    # Replace underscores with spaces
+    name = segment_id.replace("_", " ")
+    # Handle age ranges (e.g., "25 34" -> "25-34")
+    import re
+    name = re.sub(r'(\d+)\s+(\d+)', r'\1-\2', name)
+    # Title case each word
+    name = name.title()
+    return name
+
+
 # ─────────────────────────────────────────────
 #  STYLES
 # ─────────────────────────────────────────────
@@ -74,12 +88,12 @@ def _apply_custom_style(theme: str = "dark") -> None:
             --primary-strong:#1E40AF;
             --primary-soft:rgba(29,78,216,0.10);
             --primary-border:rgba(29,78,216,0.24);
-            --success:#059669;
-            --success-soft:rgba(5,150,105,0.12);
-            --warning:#D97706;
-            --warning-soft:rgba(217,119,6,0.14);
-            --danger:#DC2626;
-            --danger-soft:rgba(220,38,38,0.12);
+            --success:#22C55E;
+            --success-soft:rgba(34,197,94,0.12);
+            --warning:#F59E0B;
+            --warning-soft:rgba(245,158,11,0.14);
+            --danger:#F87171;
+            --danger-soft:rgba(248,113,113,0.12);
             --font:'Manrope', sans-serif;
             --mono:'IBM Plex Mono', monospace;
         }
@@ -134,9 +148,9 @@ def _apply_custom_style(theme: str = "dark") -> None:
 
         .sidebar-logo .logo-title {
             color: var(--text-primary);
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: -0.01em;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: -0.02em;
             line-height: 1.25;
         }
 
@@ -559,15 +573,15 @@ def _apply_custom_style(theme: str = "dark") -> None:
         }
 
         .risk-fill.low {
-            background: linear-gradient(90deg, #10B981, #34D399);
+            background: linear-gradient(90deg, #4ADE80, #86EFAC);
         }
 
         .risk-fill.medium {
-            background: linear-gradient(90deg, #F59E0B, #FBBF24);
+            background: linear-gradient(90deg, #FCD34D, #FDE68A);
         }
 
         .risk-fill.high {
-            background: linear-gradient(90deg, #EF4444, #DC2626);
+            background: linear-gradient(90deg, #FCA5A5, #FECACA);
         }
 
         .risk-foot {
@@ -847,10 +861,10 @@ def _apply_custom_style(theme: str = "dark") -> None:
 
         .legend-blue { color: #2563EB; }
         .legend-blue .legend-dot { background: #2563EB; }
-        .legend-red { color: #DC2626; }
-        .legend-red .legend-dot { background: #DC2626; }
-        .legend-green { color: #059669; }
-        .legend-green .legend-dot { background: #059669; }
+        .legend-red { color: #FCA5A5; }
+        .legend-red .legend-dot { background: #FCA5A5; }
+        .legend-green { color: #4ADE80; }
+        .legend-green .legend-dot { background: #4ADE80; }
 
         .legend-body {
             font-size: 12px;
@@ -1052,7 +1066,13 @@ def _apply_custom_style(theme: str = "dark") -> None:
         .exec-body {
             font-size: 14px;
             color: var(--text-secondary);
-            line-height: 1.75;
+            line-height: 1.9;
+            padding: 4px 0;
+        }
+        
+        .exec-body b {
+            color: var(--text-primary);
+            font-weight: 700;
         }
 
         .meta-pill {
@@ -1103,6 +1123,131 @@ def _apply_custom_style(theme: str = "dark") -> None:
 
         .stDataFrame tbody tr:hover td {
             background: var(--bg-card-hover) !important;
+        }
+
+        /* Custom metrics table - works with both themes */
+        .metrics-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+        
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font);
+        }
+        
+        .metrics-table thead tr th {
+            background: var(--bg-soft);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            white-space: nowrap;
+        }
+        
+        .metrics-table tbody tr td {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-family: var(--mono);
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        .metrics-table tbody tr:hover td {
+            background: var(--bg-card-hover);
+        }
+        
+        .metrics-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Streamlit data editor / glide data grid - comprehensive fix for both themes */
+        [data-testid="stDataFrame"] {
+            background: var(--bg-card) !important;
+        }
+        
+        [data-testid="stDataFrame"] > div {
+            background: var(--bg-card) !important;
+        }
+        
+        [data-testid="stDataFrame"] > div > div {
+            background: var(--bg-card) !important;
+        }
+        
+        [data-testid="stDataFrame"] [data-testid="glideDataEditor"] {
+            background: var(--bg-card) !important;
+        }
+        
+        [data-testid="stDataFrame"] .dvn-scroller {
+            background: var(--bg-card) !important;
+        }
+        
+        /* Header row styling */
+        [data-testid="stDataFrame"] .dvn-header {
+            background: var(--bg-soft) !important;
+            color: var(--text-muted) !important;
+        }
+        
+        /* Data cells - target canvas wrapper */
+        [data-testid="stDataFrame"] .dvn-cell {
+            background: var(--bg-card) !important;
+            color: var(--text-secondary) !important;
+        }
+        
+        /* Target the inner scroll container */
+        [data-testid="stDataFrame"] [class*="StyledDataFrame"],
+        [data-testid="stDataFrame"] [class*="styledDataFrame"] {
+            background: var(--bg-card) !important;
+        }
+        
+        /* Force text color on all elements */
+        [data-testid="stDataFrame"] * {
+            color: var(--text-secondary) !important;
+        }
+        
+        [data-testid="stDataFrame"] th,
+        [data-testid="stDataFrame"] .dvn-header * {
+            color: var(--text-muted) !important;
+            background: var(--bg-soft) !important;
+        }
+        
+        /* Glide data grid specific - cell text */
+        [data-testid="stDataFrame"] canvas {
+            background: var(--bg-card) !important;
+        }
+        
+        /* Target the data grid wrapper */
+        .stDataFrame > div:first-child {
+            background: var(--bg-card) !important;
+        }
+        
+        /* Arrow table styling */
+        [data-testid="stDataFrame"] [data-testid="StyledDataFrameDataEditor"] {
+            background: var(--bg-card) !important;
+        }
+        
+        /* Ensure row text is visible */
+        [data-testid="stDataFrame"] [role="grid"],
+        [data-testid="stDataFrame"] [role="gridcell"],
+        [data-testid="stDataFrame"] [role="rowheader"],
+        [data-testid="stDataFrame"] [role="columnheader"] {
+            color: var(--text-secondary) !important;
+            background: var(--bg-card) !important;
+        }
+        
+        [data-testid="stDataFrame"] [role="columnheader"] {
+            color: var(--text-muted) !important;
+            background: var(--bg-soft) !important;
         }
 
         [data-baseweb="popover"] ul {
@@ -1296,7 +1441,7 @@ def _build_forecast_figure(segment_df: pd.DataFrame, result: ForecastResult, the
     fig.add_trace(go.Scatter(
         x=result.forecast_df["date"], y=result.forecast_df["baseline"],
         mode="lines", name="Naive baseline",
-        line=dict(color="#059669", dash="dot", width=1.8),
+        line=dict(color="#4ADE80", dash="dot", width=1.8),
     ))
 
     fig.update_layout(
@@ -1348,9 +1493,9 @@ def _build_scenario_figure(scenario_df: pd.DataFrame, theme: str = "dark") -> go
     fig.add_trace(go.Scatter(
         x=scenario_df["date"], y=scenario_df["stressed_delinquency"],
         mode="lines+markers", name="Rate shock applied",
-        line=dict(color="#DC2626", width=3.0),
-        marker=dict(size=6, color="#DC2626", line=dict(color=marker_ring, width=1.5)),
-        fill="tonexty", fillcolor="rgba(220,38,38,0.11)",
+        line=dict(color="#F87171", width=3.0),
+        marker=dict(size=6, color="#F87171", line=dict(color=marker_ring, width=1.5)),
+        fill="tonexty", fillcolor="rgba(248,113,113,0.11)",
     ))
 
     fig.update_layout(
@@ -1392,32 +1537,56 @@ def _default_text_summary(
     next_point = forecast_result.forecast_df.iloc[0]
     anomaly_count = int(len(anomalies_df))
     avg_stress_delta = float(scenario_df["delta"].mean()) if not scenario_df.empty else 0.0
+    formatted_segment = _format_segment_name(segment_id)
+    risk_level = "elevated" if next_point['central'] > 0.08 else ("moderate" if next_point['central'] > 0.05 else "low")
+    anomaly_status = f"{anomaly_count} detected - requires attention" if anomaly_count > 0 else "None detected - within normal range"
     return (
-        f"Segment {segment_id}: next forecasted delinquency is {next_point['central']:.2%} "
-        f"with an 80% band of {next_point['lower']:.2%} to {next_point['upper']:.2%}. "
-        f"Recent anomaly count in the selected window is {anomaly_count}. "
-        f"Under a +{delta_rate:.2f}% interest-rate shock, expected delinquency changes by "
-        f"about {avg_stress_delta:.2%} on average over the forecast horizon."
+        f"• <b>Risk Outlook:</b> {risk_level.title()} risk for {formatted_segment}<br>"
+        f"• <b>Forecast:</b> Delinquency rate projected at {next_point['central']:.2%} (range: {next_point['lower']:.2%} - {next_point['upper']:.2%})<br>"
+        f"• <b>Anomalies:</b> {anomaly_status}<br>"
+        f"• <b>Stress Sensitivity:</b> Under +{delta_rate:.2f}% rate shock, delinquency shifts by {avg_stress_delta:+.2%}<br>"
+        f"• <b>Recommendation:</b> {'Monitor closely and consider early intervention' if risk_level == 'elevated' else 'Continue standard monitoring cadence'}"
     )
 
 
 @st.cache_data(show_spinner="Generating AI summary...", ttl="1h")
 def _maybe_generate_llm_summary(fallback_summary: str, context_payload: dict) -> str:
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        return fallback_summary
+    api_key = "AIzaSyDqijI72yJUpaqmAzXAUmOI7WHtOZC6bqs"
     try:
         import google.generativeai as genai
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-1.5-flash")
-        prompt = (
-            "Summarize this delinquency risk dashboard for a non-technical banking manager in 4 sentences. "
-            "Use plain language and include one recommendation. Data: "
-            f"{context_payload}"
-        )
+        
+        segment_name = _format_segment_name(context_payload.get("segment", ""))
+        forecast_data = context_payload.get("next_forecast", {})
+        anomaly_count = context_payload.get("anomalies", 0)
+        stress_delta = context_payload.get("avg_stress_delta", 0)
+        delta_rate = context_payload.get("delta_rate", 0.5)
+        
+        prompt = f"""You are a financial analyst assistant. Generate a clear, concise executive summary for a credit risk dashboard.
+
+Data:
+- Customer Segment: {segment_name}
+- Forecasted Delinquency Rate: {forecast_data.get('central', 0):.2%}
+- Confidence Band: {forecast_data.get('lower', 0):.2%} to {forecast_data.get('upper', 0):.2%}
+- Anomalies Detected: {anomaly_count}
+- Stress Test (+{delta_rate:.2f}% rate shock): Average impact of {stress_delta:+.2%}
+
+Write a 5-6 bullet point summary in this exact format:
+• Risk Outlook: [state if low/moderate/elevated risk]
+• Forecast: [delinquency rate prediction with confidence range]
+• Anomalies: [anomaly status and any concerns]
+• Stress Sensitivity: [how the portfolio responds to rate shocks]
+• Key Concern: [main risk factor to watch]
+• Recommendation: [one actionable step]
+
+Use professional but accessible language. Be specific with numbers. Start each bullet with • symbol. Do not use markdown formatting or asterisks."""
+        
         response = model.generate_content(prompt)
         if hasattr(response, "text") and response.text:
-            return response.text.strip()
+            # Convert newlines to HTML breaks for proper display
+            formatted = response.text.strip().replace("\n", "<br>")
+            return formatted
     except Exception:
         pass
     return fallback_summary
@@ -1457,7 +1626,7 @@ def main() -> None:
             uploaded_file = st.file_uploader(
                 "Upload CSV",
                 type=["csv"],
-                help="Required columns: date, segment_id, repayment_rate, delinquency_rate, income_to_debt_ratio, avg_interest_rate",
+                help="Required columns: Date, Segment ID, Repayment Rate, Delinquency Rate, Income to Debt Ratio, Average Interest Rate",
                 label_visibility="collapsed",
             )
         else:
@@ -1559,6 +1728,7 @@ def main() -> None:
     selected_segment = st.sidebar.selectbox(
         "Customer segment",
         options=segment_options,
+        format_func=_format_segment_name,
         help="Switch between portfolio segments to compare risk profiles.",
     )
 
@@ -1608,7 +1778,7 @@ def main() -> None:
                 <div class="app-title">Credit Default Risk Forecasting</div>
                 <div class="app-subtitle">Portfolio-level delinquency outlook, anomaly monitoring, and stress testing</div>
             </div>
-            <div class="segment-badge">Segment {selected_segment}</div>
+            <div class="segment-badge">{_format_segment_name(selected_segment)}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -1814,7 +1984,18 @@ def main() -> None:
                 unsafe_allow_html=True,
             )
         else:
-            st.dataframe(_prepare_anomaly_display(anomalies_df), use_container_width=True)
+            anomaly_display = _prepare_anomaly_display(anomalies_df)
+            html_table = '<div class="metrics-table-wrap"><table class="metrics-table"><thead><tr>'
+            for col in anomaly_display.columns:
+                html_table += f'<th>{col}</th>'
+            html_table += '</tr></thead><tbody>'
+            for _, row in anomaly_display.iterrows():
+                html_table += '<tr>'
+                for val in row:
+                    html_table += f'<td>{val}</td>'
+                html_table += '</tr>'
+            html_table += '</tbody></table></div>'
+            st.markdown(html_table, unsafe_allow_html=True)
 
         st.caption("Anomaly = actual delinquency rate exceeded the upper forecast band + anomaly margin, or fell below the lower band.")
 
@@ -1858,7 +2039,24 @@ def main() -> None:
             scenario_table["date"] = pd.to_datetime(scenario_table["date"]).dt.strftime("%Y-%m-%d")
             for col in ["baseline_delinquency", "stressed_delinquency", "delta"]:
                 scenario_table[col] = scenario_table[col].map(lambda v: f"{float(v):.2%}")
-            st.dataframe(scenario_table, use_container_width=True)
+            # Rename columns for display
+            scenario_table = scenario_table.rename(columns={
+                "date": "Date",
+                "baseline_delinquency": "Baseline",
+                "stressed_delinquency": "Stressed",
+                "delta": "Delta"
+            })
+            html_table = '<div class="metrics-table-wrap"><table class="metrics-table"><thead><tr>'
+            for col in scenario_table.columns:
+                html_table += f'<th>{col}</th>'
+            html_table += '</tr></thead><tbody>'
+            for _, row in scenario_table.iterrows():
+                html_table += '<tr>'
+                for val in row:
+                    html_table += f'<td>{val}</td>'
+                html_table += '</tr>'
+            html_table += '</tbody></table></div>'
+            st.markdown(html_table, unsafe_allow_html=True)
 
         st.caption(f"Stress model in use: {scenario_used}. The shaded area represents the additional delinquency risk introduced by the rate shock.")
 
@@ -1876,6 +2074,7 @@ def main() -> None:
             "next_forecast": forecast_result.forecast_df.iloc[0].to_dict(),
             "anomalies": len(anomalies_df),
             "avg_stress_delta": avg_stress_delta,
+            "delta_rate": delta_rate,
         }
         final_summary = _maybe_generate_llm_summary(fallback_summary, summary_payload)
 
@@ -1883,9 +2082,9 @@ def main() -> None:
             f"""
             <div class="exec-card">
                 <div class="exec-header">
-                    <span class="exec-icon">SUM</span>
+                    <span class="exec-icon">AI</span>
                     <div class="exec-title">Executive Summary</div>
-                    <div class="exec-badge">{'AI Generated' if os.getenv('GEMINI_API_KEY') else 'Auto Generated'}</div>
+                    <div class="exec-badge">AI Generated</div>
                 </div>
                 <div class="exec-body">{final_summary}</div>
             </div>
@@ -1896,7 +2095,7 @@ def main() -> None:
         st.markdown(
             f"""
             <div style="margin-bottom: 20px;">
-                <span class="meta-pill">Segment: <b>{selected_segment}</b></span>
+                <span class="meta-pill">Segment: <b>{_format_segment_name(selected_segment)}</b></span>
                 <span class="meta-pill">Forecast model: <b>{forecast_result.model_name}</b></span>
                 <span class="meta-pill">Stress model: <b>{scenario_used}</b></span>
                 <span class="meta-pill">Horizon: <b>{horizon_weeks} weeks</b></span>
@@ -1923,6 +2122,9 @@ def main() -> None:
             )
         else:
             display_metrics = metrics.copy()
+            # Format segment names
+            if "segment_id" in display_metrics.columns:
+                display_metrics["segment_id"] = display_metrics["segment_id"].apply(_format_segment_name)
             for col in ["model_mae", "model_rmse", "naive_mae", "naive_rmse", "rolling_mae", "rolling_rmse"]:
                 display_metrics[col] = display_metrics[col].map(lambda v: f"{float(v):.4f}")
             for col in ["model_mape", "naive_mape", "rolling_mape"]:
@@ -1930,7 +2132,38 @@ def main() -> None:
             display_metrics["roc_auc"] = display_metrics["roc_auc"].map(
                 lambda v: "n/a" if pd.isna(v) else f"{float(v):.3f}"
             )
-            st.dataframe(display_metrics, use_container_width=True)
+            # Rename columns to human-readable names
+            display_metrics = display_metrics.rename(columns={
+                "segment_id": "Segment",
+                "n_test_points": "Test Points",
+                "model_mae": "Model MAE",
+                "model_rmse": "Model RMSE",
+                "model_mape": "Model MAPE",
+                "naive_mae": "Naive MAE",
+                "naive_rmse": "Naive RMSE",
+                "naive_mape": "Naive MAPE",
+                "rolling_mae": "Rolling MAE",
+                "rolling_rmse": "Rolling RMSE",
+                "rolling_mape": "Rolling MAPE",
+                "roc_auc": "ROC AUC",
+                "tn": "TN",
+                "fp": "FP",
+                "fn": "FN",
+                "tp": "TP",
+            })
+            
+            # Build HTML table for proper theme support
+            html_table = '<div class="metrics-table-wrap"><table class="metrics-table"><thead><tr>'
+            for col in display_metrics.columns:
+                html_table += f'<th>{col}</th>'
+            html_table += '</tr></thead><tbody>'
+            for _, row in display_metrics.iterrows():
+                html_table += '<tr>'
+                for val in row:
+                    html_table += f'<td>{val}</td>'
+                html_table += '</tr>'
+            html_table += '</tbody></table></div>'
+            st.markdown(html_table, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
