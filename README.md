@@ -144,7 +144,9 @@ Output: MAE, RMSE, MAPE, ROC-AUC, confusion matrix per segment
 
 ### System Design
 ```
-<img width="1471" height="691" alt="Credit_default_architecture drawio" src="https://github.com/user-attachments/assets/900fcc30-e51d-4b9f-acd5-028c53efd3e4" />
+## Project Architecture
+
+![Project Architecture](assets/architecture.png) 
 
 ### Data Flow
 1. **Load:** User selects dataset → CSV loaded and validated
