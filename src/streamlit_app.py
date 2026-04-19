@@ -35,17 +35,17 @@ DATA_SOURCE_UPLOAD = "Upload your own CSV"
 def _apply_custom_style(theme: str = "dark") -> None:
     if theme == "light":
         theme_vars = (
-            "--bg-main:#F2F6FC;"
+            "--bg-main:#F0F4FA;"
             "--bg-panel:#FFFFFF;"
             "--bg-card:#FFFFFF;"
-            "--bg-card-hover:#F6FAFF;"
-            "--bg-soft:#EEF4FF;"
-            "--border:#D6E1F0;"
+            "--bg-card-hover:#F8FAFC;"
+            "--bg-soft:#EBF2FF;"
+            "--border:#CBD5E1;"
             "--text-primary:#0F172A;"
-            "--text-secondary:#334155;"
-            "--text-muted:#64748B;"
-            "--shadow-sm:0 4px 14px rgba(15,23,42,0.06);"
-            "--shadow-md:0 16px 36px rgba(15,23,42,0.10);"
+            "--text-secondary:#1E293B;"
+            "--text-muted:#475569;"
+            "--shadow-sm:0 4px 14px rgba(15,23,42,0.08);"
+            "--shadow-md:0 16px 36px rgba(15,23,42,0.12);"
         )
     else:
         theme_vars = (
@@ -128,14 +128,12 @@ def _apply_custom_style(theme: str = "dark") -> None:
         .sidebar-logo {
             margin: -1rem -1rem 8px -1rem;
             padding: 20px 20px 16px;
-            border-bottom: 1px solid rgba(148,163,184,0.18);
-            background:
-                radial-gradient(90% 180% at 100% 0%, rgba(59,130,246,0.20) 0%, rgba(59,130,246,0) 70%),
-                linear-gradient(145deg, #0F172A 0%, #12243F 100%);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
         }
 
         .sidebar-logo .logo-title {
-            color: #F8FAFC;
+            color: var(--text-primary);
             font-size: 15px;
             font-weight: 800;
             letter-spacing: -0.01em;
@@ -143,10 +141,68 @@ def _apply_custom_style(theme: str = "dark") -> None:
         }
 
         .sidebar-logo .logo-sub {
-            color: rgba(226,232,240,0.80);
+            color: var(--text-muted);
             font-size: 11px;
             font-weight: 500;
             margin-top: 3px;
+        }
+
+        /* Radio button styling for both themes */
+        [data-testid="stSidebar"] .stRadio > div {
+            background: var(--bg-card) !important;
+            border-radius: 8px !important;
+            padding: 4px !important;
+            border: 1px solid var(--border) !important;
+        }
+
+        /* Radio button labels */
+        [data-testid="stSidebar"] .stRadio label {
+            color: var(--text-primary) !important;
+            font-weight: 600 !important;
+            background: transparent !important;
+        }
+
+        [data-testid="stSidebar"] .stRadio label:hover {
+            background: var(--bg-soft) !important;
+        }
+
+        [data-testid="stSidebar"] .stRadio label[data-checked="true"],
+        [data-testid="stSidebar"] .stRadio div[data-checked="true"] label {
+            color: var(--primary) !important;
+            background: var(--primary-soft) !important;
+        }
+
+        /* Radio button text - force visibility */
+        [data-testid="stSidebar"] .stRadio label span,
+        [data-testid="stSidebar"] .stRadio label p,
+        [data-testid="stSidebar"] .stRadio label div,
+        [data-testid="stSidebar"] .stRadio [data-testid="stMarkdownContainer"],
+        [data-testid="stSidebar"] .stRadio [data-testid="stMarkdownContainer"] p {
+            color: var(--text-primary) !important;
+        }
+
+        /* Horizontal radio buttons */
+        [data-testid="stSidebar"] .stRadio [role="radiogroup"] {
+            background: var(--bg-card) !important;
+        }
+
+        [data-testid="stSidebar"] .stRadio [role="radiogroup"] label {
+            color: var(--text-primary) !important;
+            padding: 6px 12px !important;
+            border-radius: 6px !important;
+        }
+
+        [data-testid="stSidebar"] .stRadio [role="radiogroup"] label span,
+        [data-testid="stSidebar"] .stRadio [role="radiogroup"] label p,
+        [data-testid="stSidebar"] .stRadio [role="radiogroup"] [data-testid="stMarkdownContainer"],
+        [data-testid="stSidebar"] .stRadio [role="radiogroup"] [data-testid="stMarkdownContainer"] p {
+            color: var(--text-primary) !important;
+        }
+
+        /* Divider styling */
+        [data-testid="stSidebar"] hr {
+            border-color: var(--border) !important;
+            margin: 16px 0 !important;
         }
 
         .section-label {
@@ -178,6 +234,41 @@ def _apply_custom_style(theme: str = "dark") -> None:
 
         [data-testid="stSidebar"] [data-baseweb="select"] > div {
             color: var(--text-primary) !important;
+            background: var(--bg-card) !important;
+        }
+
+        /* Dropdown menu popup styling */
+        [data-baseweb="popover"] {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 10px !important;
+        }
+
+        [data-baseweb="menu"] {
+            background: var(--bg-card) !important;
+        }
+
+        [data-baseweb="menu"] li {
+            background: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+        }
+
+        [data-baseweb="menu"] li:hover {
+            background: var(--bg-soft) !important;
+        }
+
+        [data-baseweb="menu"] li[aria-selected="true"] {
+            background: var(--primary-soft) !important;
+            color: var(--primary) !important;
+        }
+
+        /* Select input text */
+        [data-baseweb="select"] input {
+            color: var(--text-primary) !important;
+        }
+
+        [data-baseweb="select"] [data-baseweb="icon"] {
+            color: var(--text-muted) !important;
         }
 
         [data-testid="stSidebar"] .stSlider [data-baseweb="slider"] > div > div:nth-child(3) {
@@ -209,6 +300,37 @@ def _apply_custom_style(theme: str = "dark") -> None:
             color: var(--primary) !important;
             border-radius: 8px !important;
             font-weight: 700 !important;
+            padding: 8px 16px !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        /* Fix duplicate text in file uploader button */
+        [data-testid="stFileUploader"] section button span[data-testid="stMarkdownContainer"] {
+            display: none !important;
+        }
+
+        [data-testid="stFileUploader"] section button > div {
+            display: none !important;
+        }
+
+        [data-testid="stFileUploader"] section button::after {
+            content: "Browse files" !important;
+            display: block !important;
+            color: var(--primary) !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+        }
+
+        [data-testid="stFileUploader"] section small,
+        [data-testid="stFileUploader"] section > div:not(:has(button)) {
+            color: var(--text-muted) !important;
+            font-size: 12px !important;
+        }
+
+        /* Hide the native file input text */
+        [data-testid="stFileUploader"] input[type="file"] {
+            color: transparent !important;
         }
 
         .sidebar-tip {
@@ -1323,21 +1445,6 @@ def main() -> None:
             unsafe_allow_html=True,
         )
 
-        # ── Theme Toggle ──
-        st.markdown("<div class='section-label'>Appearance</div>", unsafe_allow_html=True)
-        current_theme = st.session_state.get("theme", "light")
-        toggle_label = "Dark mode" if current_theme == "dark" else "Light mode"
-        is_light_on = st.toggle(
-            toggle_label,
-            value=(current_theme == "light"),
-            key="theme_toggle",
-            help="Switch between light mode and dark mode",
-        )
-        new_theme = "light" if is_light_on else "dark"
-        if new_theme != current_theme:
-            st.session_state["theme"] = new_theme
-            st.rerun()
-
         st.markdown("<div class='section-label'>Data Source</div>", unsafe_allow_html=True)
         data_source = st.selectbox(
             "Dataset",
@@ -1398,6 +1505,24 @@ def main() -> None:
             """,
             unsafe_allow_html=True,
         )
+
+        # ── Theme Toggle (at bottom) ──
+        st.markdown("<div style='margin-top: 24px;'></div>", unsafe_allow_html=True)
+        st.divider()
+        st.markdown("<div class='section-label'>Appearance</div>", unsafe_allow_html=True)
+        current_theme = st.session_state.get("theme", "light")
+        theme_options = ["Light", "Dark"]
+        selected_theme_label = st.radio(
+            "Theme",
+            options=theme_options,
+            index=0 if current_theme == "light" else 1,
+            horizontal=True,
+            label_visibility="collapsed",
+        )
+        new_theme = "light" if selected_theme_label == "Light" else "dark"
+        if new_theme != current_theme:
+            st.session_state["theme"] = new_theme
+            st.rerun()
 
     # ── DATA LOADING ─────────────────────────
     if data_source == DATA_SOURCE_UPLOAD and uploaded_file is None:
@@ -1480,7 +1605,6 @@ def main() -> None:
         f"""
         <div class="top-bar">
             <div>
-                <div class="app-kicker">NatWest Hackathon Demo</div>
                 <div class="app-title">Credit Default Risk Forecasting</div>
                 <div class="app-subtitle">Portfolio-level delinquency outlook, anomaly monitoring, and stress testing</div>
             </div>
