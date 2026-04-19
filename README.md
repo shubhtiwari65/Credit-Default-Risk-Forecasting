@@ -144,21 +144,7 @@ Output: MAE, RMSE, MAPE, ROC-AUC, confusion matrix per segment
 
 ### System Design
 ```
-Streamlit Frontend (src/streamlit_app.py)
-    ↓
-Core Business Logic
-├─ Data Loader (src/data_loader.py)        → CSV parsing, schema validation
-├─ Forecasting (src/forecasting.py)        → SARIMAX & baseline models
-├─ Anomalies (src/anomalies.py)           → Rolling-origin detection
-├─ Scenarios (src/scenarios.py)           → Stress testing & sensitivity
-└─ Evaluation (src/evaluation.py)         → Backtesting & metrics
-
-Data Sources
-├─ assets/sample_dataset.csv               → Starter sample (~8 segments)
-└─ assets/demo_dataset_extended.csv        → Extended sample (~15 segments)
-
-Optional: Google Gemini API → LLM summaries
-```
+<img width="1471" height="691" alt="Credit_default_architecture drawio" src="https://github.com/user-attachments/assets/900fcc30-e51d-4b9f-acd5-028c53efd3e4" />
 
 ### Data Flow
 1. **Load:** User selects dataset → CSV loaded and validated
