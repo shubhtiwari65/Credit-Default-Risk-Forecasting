@@ -1,42 +1,38 @@
 # Credit Default Risk Forecasting
 
-Segment-level credit delinquency forecasting, anomaly monitoring, and interest-rate shock scenario analysis in an interactive Streamlit dashboard.
+Segment-level credit delinquency forecasting, anomaly monitoring, and rate-shock scenario analysis in an interactive Streamlit dashboard.
 
 ## Overview
 
-This project helps risk teams detect early signs of portfolio stress through:
+This project helps risk teams monitor early signs of credit stress by combining:
 
 - short-horizon delinquency forecasting
 - anomaly detection against forecast bands
 - interest-rate stress simulation
 - segment-level backtesting metrics
 
-The focus is explainability and decision support, not black-box modeling.
+The app is designed for explainability and practical decision support rather than black-box modeling.
 
-## Key Features
+## What It Does
 
-- Forecasts delinquency rates using SARIMAX with baseline fallbacks
-- Produces forecast intervals for uncertainty-aware monitoring
-- Flags anomalies in recent periods with configurable tolerance
-- Simulates delinquency shifts under interest-rate shocks
-- Reports MAE, RMSE, MAPE, ROC-AUC, and confusion-matrix counts
-- Provides a four-tab Streamlit experience:
+- Forecasts delinquency rates using SARIMAX with fallback baseline logic
+- Produces 80% prediction intervals
+- Flags anomalies in recent periods with configurable margins
+- Simulates default pressure under interest-rate shocks
+- Calculates backtesting metrics (MAE, RMSE, MAPE, ROC-AUC, confusion matrix)
+- Displays everything in a four-tab Streamlit UI:
   - Forecast View
   - Anomaly Monitor
   - Scenario Lab
   - Executive Summary
 
-## Repository Structure
+## Project Structure
 
 ```text
 assets/
   architecture.png
   sample_dataset.csv
   demo_dataset_extended.csv
-  forecast_panel.svg
-  anomalies_panel.svg
-  scenario_panel.svg
-scripts/
 src/
   streamlit_app.py
   data_loader.py
@@ -48,25 +44,30 @@ tests/
   test_pipeline.py
   test_evaluation.py
   test_upload_resilience.py
-.env.example
+project_architecture.drawio
 requirements.txt
 README.md
-LICENSE
 ```
 
 ## Architecture
 
+### Visual Architecture
+
 ![Project Architecture](assets/architecture.png)
+
+### Editable Diagram
+
+- Draw.io file: project_architecture.drawio
 
 ### Data Flow
 
-1. Load data from starter sample, extended sample, or uploaded CSV.
-2. Normalize headers, coerce datatypes, and validate required fields.
-3. Filter sparse segments and select a segment in the UI.
-4. Forecast delinquency with SARIMAX (or fallback baseline).
-5. Detect anomalies via rolling-origin checks.
-6. Run interest-rate stress scenarios.
-7. Render dashboard views and executive summary.
+1. Load data from starter sample, extended sample, or uploaded CSV
+2. Normalize headers, coerce data types, validate required columns
+3. Filter sparse segments and select segment in the UI
+4. Forecast delinquency with SARIMAX (or baseline fallback)
+5. Detect anomalies via rolling-origin forecast checks
+6. Run interest-rate stress scenario
+7. Render dashboard outputs and summary metrics
 
 ## Installation
 
@@ -90,13 +91,13 @@ venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-## Run the Dashboard
+## Run the App
 
 ```bash
-streamlit run src/streamlit_app.py
+python -m streamlit run src/streamlit_app.py
 ```
 
-Open http://localhost:8501 in your browser.
+Open: http://localhost:8501
 
 ## Evaluate from CLI
 
@@ -121,16 +122,15 @@ Required columns:
 - income_to_debt_ratio
 - avg_interest_rate
 
-Optional macro columns:
+Optional columns used when available:
 
 - unemployment_rate
 - gdp_growth
 
 Notes:
 
-- Rate fields can be provided as percentages (for example, 5.2%) or 0-1 decimals.
-- Dates are normalized to month-end timestamps.
-- Common uploaded-header variants are normalized (for example, segment to segment_id).
+- rate fields can be provided as percentages (for example, 5.2%) or 0-1 decimals
+- dates are normalized to month-end timestamps
 
 ## Tech Stack
 
@@ -140,23 +140,24 @@ Notes:
 - Scikit-learn
 - Plotly
 - Pytest
-- Google Generative AI (summary generation with fallback)
+- Google Generative AI (optional summary generation)
 
 ## Current Limitations
 
-- Forecast horizon is short term (configured via week-to-month mapping).
-- Sparse segments are excluded by minimum-observation filtering.
-- SARIMAX order is fixed to a simple configuration.
-- Scenario engine is sensitivity-based and not causal.
+- Forecast horizon is short-term (configured through week-to-month mapping)
+- Sparse segments are excluded by minimum-observation filtering
+- SARIMAX order is fixed to a simple specification in current implementation
+- Scenario engine is linear and intended for stress sensitivity, not causal inference
 
-## AI Summary Behavior
+## Notes on AI Summary
 
-- The executive summary attempts LLM-based generation.
-- If the LLM call fails, the app falls back to deterministic summary text.
+- Executive summary generation has a safe fallback text path
+- If external AI call fails, the app still returns a deterministic summary
+- The repository includes .env.example for optional environment-based setup
 
 ## License
 
-Released under Apache License 2.0. See LICENSE.
+This project is released under the Apache License 2.0. See LICENSE.
 
 ## Support
 
