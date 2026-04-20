@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from dotenv import load_dotenv
 
 try:
     from src.anomalies import anomalies_to_frame, detect_anomalies
@@ -21,8 +22,11 @@ except ImportError:
     from scenarios import fit_interest_rate_model, stress_test_interest_rate
 
 
-SAMPLE_PATH = Path(__file__).resolve().parents[1] / "assets" / "sample_dataset.csv"
-EXTENDED_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "assets" / "demo_dataset_extended.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(PROJECT_ROOT / ".env")
+
+SAMPLE_PATH = PROJECT_ROOT / "assets" / "sample_dataset.csv"
+EXTENDED_SAMPLE_PATH = PROJECT_ROOT / "assets" / "demo_dataset_extended.csv"
 
 DATA_SOURCE_STARTER = "Starter sample dataset"
 DATA_SOURCE_EXTENDED = "Extended sample dataset"
@@ -1551,7 +1555,11 @@ def _default_text_summary(
 
 @st.cache_data(show_spinner="Generating AI summary...", ttl="1h")
 def _maybe_generate_llm_summary(fallback_summary: str, context_payload: dict) -> str:
-    api_key = "AIzaSyDqijI72yJUpaqmAzXAUmOI7WHtOZC6bqs"
+    use_gemini = os.getenv("USE_GEMINI_SUMMARY", "false").strip().lower() in {"1", "true", "yes", "on"}
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not use_gemini or not api_key:
+        return fallback_summary
+
     try:
         import google.generativeai as genai
         genai.configure(api_key=api_key)
